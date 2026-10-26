@@ -89,6 +89,21 @@ io.on('connection', (socket) => {
     socketsFor(to).forEach((sid) => io.to(sid).emit('typing', { from: userId }));
   });
 
+  // Marks messages the other person sent ME as read, then tells their
+  // sockets live so their sent checkmarks turn blue without a reload.
+  socket.on('messages:read', async ({ from }) => {
+    if (!Number.isInteger(from)) return;
+    const result = await pool.query(
+      `UPDATE messages SET read = true
+       WHERE sender_id = $1 AND receiver_id = $2 AND read = false
+       RETURNING id`,
+      [from, userId]
+    );
+    if (result.rows.length === 0) return;
+    const ids = result.rows.map((r) => r.id);
+    socketsFor(from).forEach((sid) => io.to(sid).emit('messages:read', { by: userId, ids }));
+  });
+
   // ── WebRTC signaling relay (server never touches audio/video, just forwards) ──
   socket.on('call:offer', ({ to, sdp, kind }) => {
     socketsFor(to).forEach((sid) => io.to(sid).emit('call:offer', { from: userId, sdp, kind }));
