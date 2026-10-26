@@ -1,8 +1,6 @@
-// ── state ────────────────────────────────────────────────────────────────
-const COLORS = ['#3ecfb2','#7b61ff','#ff6b9d','#ff9f43','#54a0ff','#5f27cd','#00d2d3','#ff6348'];
+// Requires common.js to be loaded first.
 const ICE_SERVERS = [{ urls: 'stun:stun.l.google.com:19302' }];
 
-let token = null;
 let me = null;
 let socket = null;
 let users = [];
@@ -11,7 +9,6 @@ let online = new Set();
 let unread = new Map();
 let lastMsg = new Map();
 let activeUser = null;
-let typingTimeout = null;
 
 let pc = null;
 let localStream = null;
@@ -24,101 +21,25 @@ let callTimer = null;
 let muted = false;
 let camOff = false;
 
-// ── boot ─────────────────────────────────────────────────────────────────
-(function boot() {
+(async function boot() {
+  if (!requireTokenOrRedirect()) return;
   try {
-    const saved = localStorage.getItem('kichat-theme');
-    if (saved) document.documentElement.setAttribute('data-theme', saved);
-  } catch (e) {}
-
-  const modified = new Date(document.lastModified).toLocaleDateString(undefined, {
-    year: 'numeric', month: 'short', day: 'numeric',
-  });
-  ['last-modified-auth', 'last-modified-app'].forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = modified;
-  });
-
-  let savedToken = null;
-  try { savedToken = localStorage.getItem('kichat_token'); } catch (e) {}
-
-  if (savedToken) {
-    token = savedToken;
-    fetchJSON('/api/users/me')
-      .then((user) => { me = user; initApp(); })
-      .catch(() => { token = null; try { localStorage.removeItem('kichat_token'); } catch (e) {} });
+    me = await fetchJSON('/api/users/me');
+  } catch (e) {
+    clearToken();
+    location.href = '/login';
+    return;
   }
+  await initApp();
 })();
 
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const username = document.getElementById('login-username').value.trim();
-  const password = document.getElementById('login-password').value;
-  const errEl = document.getElementById('login-error');
-  errEl.textContent = '';
-  try {
-    const data = await postJSON('/api/auth/login', { username, password });
-    onAuthed(data);
-  } catch (err) {
-    errEl.textContent = err.message;
-  }
-});
-
-document.getElementById('register-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const username = document.getElementById('register-username').value.trim();
-  const password = document.getElementById('register-password').value;
-  const errEl = document.getElementById('register-error');
-  errEl.textContent = '';
-  try {
-    const data = await postJSON('/api/auth/register', { username, password });
-    onAuthed(data);
-  } catch (err) {
-    errEl.textContent = err.message;
-  }
-});
-
-function onAuthed(data) {
-  token = data.token;
-  me = data.user;
-  try { localStorage.setItem('kichat_token', token); } catch (e) {}
-  initApp();
-}
-
-function showAuthTab(tab) {
-  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-  document.getElementById('login-form').hidden = tab !== 'login';
-  document.getElementById('register-form').hidden = tab !== 'register';
-}
-
 function logout() {
-  try { localStorage.removeItem('kichat_token'); } catch (e) {}
+  clearToken();
   if (socket) socket.disconnect();
-  location.reload();
+  location.href = '/login';
 }
 
-// ── fetch helpers ───────────────────────────────────────────────────────
-async function fetchJSON(url) {
-  const res = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
-  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Request failed');
-  return res.json();
-}
-async function postJSON(url, body) {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || 'Request failed');
-  return data;
-}
-
-// ── app init ─────────────────────────────────────────────────────────────
 async function initApp() {
-  document.getElementById('auth-screen').hidden = true;
-  document.getElementById('app').hidden = false;
   document.getElementById('my-avatar').textContent = initialsOf(me.username);
 
   users = await fetchJSON('/api/users');
@@ -129,7 +50,7 @@ async function initApp() {
 }
 
 function connectSocket() {
-  socket = io({ auth: { token } });
+  socket = io({ auth: { token: getToken() } });
 
   socket.on('presence:list', (ids) => {
     online = new Set(ids);
@@ -196,17 +117,6 @@ function connectSocket() {
 }
 
 // ── contacts / chat ─────────────────────────────────────────────────────
-function initialsOf(name) {
-  return (name || '?').slice(0, 2).toUpperCase();
-}
-function colorFor(id) {
-  return COLORS[id % COLORS.length];
-}
-function timeLabel(iso) {
-  const d = new Date(iso);
-  return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-}
-
 function renderContactList() {
   const q = document.getElementById('search-input').value.toLowerCase();
   const list = users.filter((u) => u.username.toLowerCase().includes(q));
@@ -328,25 +238,12 @@ document.getElementById('msg-input').addEventListener('input', (e) => {
   e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
 });
 
-function escapeHtml(str) {
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
-
 function showToast(text) {
   const el = document.getElementById('toast');
   el.textContent = text;
   el.hidden = false;
   clearTimeout(window.__toastClear);
   window.__toastClear = setTimeout(() => { el.hidden = true; }, 3000);
-}
-
-function toggleTheme() {
-  const root = document.documentElement;
-  const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-  root.setAttribute('data-theme', next);
-  try { localStorage.setItem('kichat-theme', next); } catch (e) {}
 }
 
 // ── WebRTC calls ─────────────────────────────────────────────────────────
