@@ -6,7 +6,7 @@ databases:
 
 services:
   - type: web
-    name: kichat
+    name: k1chat
     env: node
     plan: free
     buildCommand: npm install
