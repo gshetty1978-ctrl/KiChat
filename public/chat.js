@@ -64,10 +64,16 @@ function connectSocket() {
 
     if (activeUser && activeUser.id === otherId) {
       appendMessage(msg);
+      // Chat's already open on screen, so this counts as read immediately.
+      if (msg.sender_id !== me.id) socket.emit('messages:read', { from: otherId });
     } else if (msg.sender_id !== me.id) {
       unread.set(otherId, (unread.get(otherId) || 0) + 1);
     }
     renderContactList();
+  });
+
+  socket.on('messages:read', ({ ids }) => {
+    markMessagesRead(ids);
   });
 
   socket.on('typing', ({ from }) => {
@@ -171,6 +177,8 @@ async function openChat(id) {
   renderMessages(history);
   renderContactList();
   document.getElementById('msg-input').focus();
+
+  socket.emit('messages:read', { from: id });
 }
 
 function updateHeaderStatus() {
@@ -191,10 +199,17 @@ function messageHtml(m) {
       <div class="msg-bubble">${escapeHtml(m.body)}</div>
       <div class="msg-meta">
         <span>${timeLabel(m.created_at)}</span>
-        ${sent ? `<span class="check">${m.read ? '✓✓' : '✓'}</span>` : ''}
+        ${sent ? `<span class="check ${m.read ? 'read' : 'unread'}">✓✓</span>` : ''}
       </div>
     </div>
   `;
+}
+
+function markMessagesRead(ids) {
+  ids.forEach((id) => {
+    const check = document.querySelector(`.msg[data-id="${id}"] .check`);
+    if (check) { check.classList.remove('unread'); check.classList.add('read'); }
+  });
 }
 
 function appendMessage(m) {
