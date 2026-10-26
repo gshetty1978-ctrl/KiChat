@@ -31,6 +31,14 @@ let camOff = false;
     if (saved) document.documentElement.setAttribute('data-theme', saved);
   } catch (e) {}
 
+  const modified = new Date(document.lastModified).toLocaleDateString(undefined, {
+    year: 'numeric', month: 'short', day: 'numeric',
+  });
+  ['last-modified-auth', 'last-modified-app'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = modified;
+  });
+
   let savedToken = null;
   try { savedToken = localStorage.getItem('kichat_token'); } catch (e) {}
 

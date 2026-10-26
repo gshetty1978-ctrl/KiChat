@@ -79,6 +79,8 @@ body {
 }
 .auth-submit:hover { background: var(--accent2); }
 .auth-error { color: var(--red); font-size: 12px; min-height: 16px; margin-top: 6px; }
+.signature-footer { text-align: center; color: var(--fg3); font-size: 11px; margin-top: 18px; letter-spacing: .2px; }
+.sidebar-signature { margin-top: auto; padding: 10px 16px 14px; border-top: 1px solid rgba(255,255,255,.05); }
 
 /* ── app shell ── */
 .app { display: grid; grid-template-columns: 72px 300px 1fr; height: 100%; overflow: hidden; }
