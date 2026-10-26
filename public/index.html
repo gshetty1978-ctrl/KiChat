@@ -11,34 +11,77 @@
 
 <!-- ───────── auth screen ───────── -->
 <div id="auth-screen" class="auth-screen">
-  <div class="auth-card">
-    <div class="auth-logo">KiChat</div>
-    <p class="auth-tagline">Message, call, and video chat in real time.</p>
+  <div class="auth-brand">
+    <div class="auth-brand-inner">
+      <div class="auth-brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        KiChat
+      </div>
+      <h1 class="auth-brand-headline">Everyone you talk to,<br>in one place.</h1>
+      <p class="auth-brand-sub">Real-time messages, voice calls, and video calls — built on your own server, not someone else's cloud.</p>
 
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-login" onclick="showAuthTab('login')">Log in</button>
-      <button class="auth-tab" id="tab-register" onclick="showAuthTab('register')">Sign up</button>
+      <ul class="auth-feature-list">
+        <li>
+          <span class="auth-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </span>
+          <div><strong>Instant messaging</strong><span>Delivered the moment you hit send, with typing indicators and read receipts.</span></div>
+        </li>
+        <li>
+          <span class="auth-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.27 6.27l1.68-1.84a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </span>
+          <div><strong>Voice calls</strong><span>Crystal-clear, peer-to-peer audio over WebRTC — no middleman server.</span></div>
+        </li>
+        <li>
+          <span class="auth-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+            </svg>
+          </span>
+          <div><strong>Video calls</strong><span>Face-to-face, direct between browsers, with full mute and camera control.</span></div>
+        </li>
+      </ul>
     </div>
-
-    <form id="login-form" class="auth-form">
-      <label>Username</label>
-      <input type="text" id="login-username" autocomplete="username" required>
-      <label>Password</label>
-      <input type="password" id="login-password" autocomplete="current-password" required>
-      <button type="submit" class="auth-submit">Log in</button>
-      <div class="auth-error" id="login-error"></div>
-    </form>
-
-    <form id="register-form" class="auth-form" hidden>
-      <label>Username</label>
-      <input type="text" id="register-username" autocomplete="username" minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" required>
-      <label>Password</label>
-      <input type="password" id="register-password" autocomplete="new-password" minlength="6" required>
-      <button type="submit" class="auth-submit">Create account</button>
-      <div class="auth-error" id="register-error"></div>
-    </form>
+    <div class="auth-brand-glow"></div>
   </div>
-  <div class="signature-footer">A Kiaan Ganesh Shetty Creation · 2026 · <span id="last-modified-auth"></span></div>
+
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="showAuthTab('login')">Log in</button>
+        <button class="auth-tab" id="tab-register" onclick="showAuthTab('register')">Sign up</button>
+      </div>
+
+      <form id="login-form" class="auth-form">
+        <label>Username</label>
+        <input type="text" id="login-username" autocomplete="username" required>
+        <label>Password</label>
+        <input type="password" id="login-password" autocomplete="current-password" required>
+        <button type="submit" class="auth-submit">Log in</button>
+        <div class="auth-error" id="login-error"></div>
+      </form>
+
+      <form id="register-form" class="auth-form" hidden>
+        <label>Username</label>
+        <input type="text" id="register-username" autocomplete="username" minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" required>
+        <p class="field-hint">3-20 characters: letters, numbers, underscore</p>
+        <label>Password</label>
+        <input type="password" id="register-password" autocomplete="new-password" minlength="6" required>
+        <p class="field-hint">At least 6 characters</p>
+        <button type="submit" class="auth-submit">Create account</button>
+        <div class="auth-error" id="register-error"></div>
+      </form>
+
+      <div class="signature-footer">A Kiaan Ganesh Shetty Creation · 2026 · <span id="last-modified-auth"></span></div>
+    </div>
+  </div>
 </div>
 
 <!-- ───────── main app ───────── -->
