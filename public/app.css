@@ -82,9 +82,15 @@ body {
 .auth-feature-list span { display: block; color: rgba(255,255,255,.55); font-size: 13px; line-height: 1.5; }
 
 .auth-brand-illustration {
-  position: absolute; top: 50%; right: -40px;
-  width: 420px; height: 420px; transform: translateY(-50%);
-  pointer-events: none;
+  position: absolute; top: 28px; right: 28px;
+  width: 170px; height: 170px;
+  pointer-events: none; display: none;
+}
+@media (min-width: 1280px) {
+  .auth-brand-illustration { display: block; }
+}
+@media (min-width: 1560px) {
+  .auth-brand-illustration { width: 220px; height: 220px; top: 36px; right: 36px; }
 }
 
 /* right: form panel */
@@ -93,6 +99,10 @@ body {
   padding: 32px 16px; background: var(--bg0);
 }
 .auth-card { width: 100%; max-width: 360px; display: flex; flex-direction: column; }
+.auth-form-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 24px; color: var(--fg); margin-bottom: 6px; }
+.auth-form-sub { color: var(--fg3); font-size: 13px; margin-bottom: 24px; }
+.auth-form-sub a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.auth-form-sub a:hover { text-decoration: underline; }
 .auth-tabs { display: flex; background: var(--bg2); border-radius: 10px; padding: 4px; gap: 4px; margin-bottom: 24px; }
 .auth-tab {
   flex: 1; border: none; background: none; color: var(--fg3);
