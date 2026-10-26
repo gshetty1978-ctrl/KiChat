@@ -1,7 +1,7 @@
 {
   "name": "kichat",
   "version": "1.0.0",
-  "description": "KiChat - real-time messaging, voice and video calls",
+  "description": "K1Chat - real-time messaging, voice and video calls",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

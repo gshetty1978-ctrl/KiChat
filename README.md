@@ -1,4 +1,4 @@
-# KiChat
+# K1Chat
 
 Real-time messaging, voice calls, and video calls. Node.js + Express + Socket.IO backend, Postgres for accounts and message history, WebRTC for peer-to-peer audio/video.
 
@@ -39,8 +39,8 @@ This repo includes a `render.yaml` blueprint that sets up the web service and a 
 1. Push this project to a GitHub repository.
 2. In the Render dashboard, click **New +** → **Blueprint**, and point it at your repo. Render will read `render.yaml` and provision:
    - A **Postgres** database (`kichat-db`)
-   - A **web service** (`kichat`) wired to that database, with `JWT_SECRET` generated automatically
-3. Once deployed, your app is live at `https://kichat.onrender.com` (or whatever subdomain Render assigns — rename the service to `kichat` in the Render dashboard if that exact name is taken, or already yours).
+   - A **web service** (`k1chat`) wired to that database, with `JWT_SECRET` generated automatically
+3. Once deployed, your app is live at `https://k1chat.onrender.com` (Render subdomains are shared across every Render user, so pick whatever name is still free if `k1chat` is ever taken too).
 
 ### Notes on Render's free tier
 

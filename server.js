@@ -112,7 +112,7 @@ const PORT = process.env.PORT || 3000;
 
 init()
   .then(() => {
-    server.listen(PORT, () => console.log(`KiChat listening on port ${PORT}`));
+    server.listen(PORT, () => console.log(`K1Chat listening on port ${PORT}`));
   })
   .catch((err) => {
     console.error('Failed to initialize database', err);
