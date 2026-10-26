@@ -16,6 +16,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Lightweight uptime check — no DB hit, so it stays fast and never
+// false-fails if Postgres is briefly slow. Point UptimeRobot (or any
+// pinger) at /healthz to keep the free-tier service from sleeping.
+app.get('/healthz', (req, res) => res.status(200).json({ status: 'ok' }));
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
