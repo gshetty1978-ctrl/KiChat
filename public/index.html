@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KiChat</title>
+<title>K1Chat</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@700;800&display=swap">
 <link rel="stylesheet" href="/app.css">
 </head>
@@ -17,7 +17,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
-        KiChat
+        K1Chat
       </div>
       <h1 class="auth-brand-headline">Everyone you talk to,<br>in one place.</h1>
       <p class="auth-brand-sub">Real-time messages, voice calls, and video calls — built on your own server, not someone else's cloud.</p>
@@ -49,7 +49,65 @@
         </li>
       </ul>
     </div>
-    <div class="auth-brand-glow"></div>
+
+    <svg class="auth-brand-illustration" viewBox="0 0 360 360" aria-hidden="true">
+      <defs>
+        <radialGradient id="glowTeal" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3ecfb2" stop-opacity=".35"/>
+          <stop offset="100%" stop-color="#3ecfb2" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glowPurple" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#7b61ff" stop-opacity=".3"/>
+          <stop offset="100%" stop-color="#7b61ff" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="hubGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#3ecfb2"/>
+          <stop offset="100%" stop-color="#2bb89d"/>
+        </linearGradient>
+      </defs>
+
+      <circle cx="195" cy="150" r="170" fill="url(#glowTeal)"/>
+      <circle cx="120" cy="260" r="130" fill="url(#glowPurple)"/>
+
+      <path d="M195,185 L95,95" stroke="rgba(255,255,255,.14)" stroke-width="1.5" stroke-dasharray="3 7" stroke-linecap="round"/>
+      <path d="M195,185 L290,105" stroke="rgba(255,255,255,.14)" stroke-width="1.5" stroke-dasharray="3 7" stroke-linecap="round"/>
+      <path d="M195,185 L220,290" stroke="rgba(255,255,255,.14)" stroke-width="1.5" stroke-dasharray="3 7" stroke-linecap="round"/>
+
+      <!-- phone badge -->
+      <g transform="translate(60,60)">
+        <rect width="72" height="72" rx="20" fill="#171b25" stroke="rgba(255,255,255,.08)"/>
+        <g transform="translate(22,22)" stroke="#3ecfb2" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M26 20.3v3.6a2.4 2.4 0 0 1-2.6 2.4 23.7 23.7 0 0 1-10.3-3.7 23.4 23.4 0 0 1-7.2-7.2A23.7 23.7 0 0 1 2.2 5.1 2.4 2.4 0 0 1 4.6 2.5h3.6a2.4 2.4 0 0 1 2.4 2.1c.15 1.15.43 2.28.85 3.35a2.4 2.4 0 0 1-.54 2.5l-1.5 1.5a19.2 19.2 0 0 0 7.2 7.2l1.5-1.5a2.4 2.4 0 0 1 2.5-.54c1.07.42 2.2.7 3.35.85a2.4 2.4 0 0 1 2.1 2.4z"/>
+        </g>
+      </g>
+
+      <!-- video badge -->
+      <g transform="translate(254,70)">
+        <rect width="72" height="72" rx="20" fill="#171b25" stroke="rgba(255,255,255,.08)"/>
+        <g transform="translate(20,24)" stroke="#7b61ff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="27 8 18 14 27 20 27 8"/>
+          <rect x="1" y="6" width="17" height="16" rx="2.4" ry="2.4"/>
+        </g>
+      </g>
+
+      <!-- center hub: chat bubble -->
+      <g transform="translate(195,185)">
+        <circle r="48" fill="url(#hubGrad)"/>
+        <g transform="translate(-14,-13)" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M26 17.5a2.3 2.3 0 0 1-2.3 2.3H8l-4.6 4.6V5.3A2.3 2.3 0 0 1 5.7 3h18a2.3 2.3 0 0 1 2.3 2.3z"/>
+        </g>
+      </g>
+
+      <!-- online dot badge -->
+      <g transform="translate(205,268)">
+        <circle r="18" fill="#171b25" stroke="rgba(255,255,255,.08)"/>
+        <circle r="6" fill="#3ecfb2"/>
+      </g>
+
+      <circle cx="70" cy="200" r="3" fill="rgba(255,255,255,.3)"/>
+      <circle cx="310" cy="180" r="3" fill="rgba(255,255,255,.25)"/>
+      <circle cx="290" cy="250" r="2.5" fill="rgba(255,255,255,.2)"/>
+    </svg>
   </div>
 
   <div class="auth-form-side">
@@ -87,7 +145,7 @@
 <!-- ───────── main app ───────── -->
 <div class="app" id="app" hidden>
   <nav class="nav-rail">
-    <div class="nav-logo">Ki</div>
+    <div class="nav-logo">K1</div>
     <div class="nav-btn active" title="Chats">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -131,7 +189,7 @@
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
       </div>
-      <h2>KiChat</h2>
+      <h2>K1Chat</h2>
       <p id="empty-text">Pick someone from the list to start chatting.</p>
     </div>
 
