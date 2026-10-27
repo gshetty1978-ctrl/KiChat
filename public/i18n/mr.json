@@ -7,14 +7,12 @@
   "brand.feature2.sub": "WebRTC द्वारे थेट, स्वच्छ आवाज — मध्ये कोणताही सर्व्हर न येता.",
   "brand.feature3.title": "व्हिडिओ कॉल",
   "brand.feature3.sub": "ब्राउझरमध्ये थेट समोरासमोर, मायक्रोफोन आणि कॅमेऱ्यावर पूर्ण नियंत्रणासह.",
-
   "auth.login.title": "लॉग इन करा",
   "auth.login.sub_prefix": "इथे नवीन आहात?",
   "auth.login.sub_link": "खाते तयार करा",
   "auth.login.username": "युजरनेम",
   "auth.login.password": "पासवर्ड",
   "auth.login.submit": "लॉग इन करा",
-
   "auth.signup.title": "तुमचे खाते तयार करा",
   "auth.signup.sub_prefix": "आधीच K1Chat वर आहात?",
   "auth.signup.sub_link": "लॉग इन करा",
@@ -23,15 +21,12 @@
   "auth.signup.password": "पासवर्ड",
   "auth.signup.password_hint": "किमान 6 अक्षरे",
   "auth.signup.submit": "खाते तयार करा",
-
   "install.button": "K1Chat इन्स्टॉल करा",
-
   "nav.chats": "चॅट्स",
   "nav.toggle_theme": "थीम बदला",
   "nav.logout": "लॉग आउट",
   "nav.edit_avatar": "प्रोफाइल फोटो बदला",
   "nav.language": "भाषा",
-
   "sidebar.title": "मेसेज",
   "sidebar.search": "शोधा…",
   "sidebar.tab.all": "सर्व",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "अजून कोणीही साइन अप केलेले नाही. इतरांना सामील होण्यासाठी अॅप लिंक शेअर करा.",
   "sidebar.say_hi": "हॅलो म्हणा 👋",
   "sidebar.no_messages_yet": "अजून कोणतेही मेसेज नाहीत",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "चॅट सुरू करण्यासाठी यादीतून कोणीतरी निवडा.",
   "chat.input.placeholder": "मेसेज लिहा…",
@@ -57,7 +51,6 @@
   "chat.offline": "ऑफलाइन",
   "chat.online_count": "{n} ऑनलाइन",
   "chat.photo": "📷 फोटो",
-
   "call.incoming_voice": "इनकमिंग व्हॉइस कॉल…",
   "call.incoming_video": "इनकमिंग व्हिडिओ कॉल…",
   "call.calling": "कॉल करत आहे…",
@@ -70,7 +63,6 @@
   "call.mute": "म्यूट",
   "call.camera": "कॅमेरा",
   "call.end": "कॉल संपवा",
-
   "modal.new_chat.title": "नवीन चॅट",
   "modal.new_chat.dm_tab": "डायरेक्ट मेसेज",
   "modal.new_chat.group_tab": "ग्रुप",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "किमान आणखी एक व्यक्ती निवडा.",
   "modal.new_chat.create_group": "ग्रुप तयार करा",
   "modal.new_chat.no_users": "अजून कोणीही साइन अप केलेले नाही.",
-
   "modal.avatar.title": "प्रोफाइल फोटो",
   "modal.avatar.choose": "फोटो निवडा",
   "modal.avatar.remove": "फोटो काढा",
-
   "modal.group_settings.title": "ग्रुप सेटिंग्ज",
   "modal.group_settings.restricted_title": "फक्त अॅडमिन मेसेज पाठवू शकतात",
   "modal.group_settings.restricted_sub": "सर्वजण अजूनही वाचू आणि रिअॅक्ट करू शकतात, फक्त पोस्ट करू शकत नाहीत.",
   "modal.group_settings.members": "सदस्य",
   "modal.group_settings.admin_badge": "अॅडमिन",
   "modal.group_settings.make_admin": "अॅडमिन बनवा",
-
   "close": "बंद करा",
-
   "toast.call_ended": "कॉल संपला",
   "toast.call_declined": "कॉल नाकारला",
   "toast.mic_cam_error": "{device} अॅक्सेस करता आले नाही",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} यांनी अजून एन्क्रिप्शन सेट केलेले नाही (त्यांना एकदा K1Chat उघडावे लागेल).",
   "toast.added_to_group": "\"{name}\" मध्ये जोडले",
   "toast.group_key_load_error": "या ग्रुपची एन्क्रिप्शन की लोड करता आली नाही.",
-
-  "footer.signature": "Kiaan Ganesh Shetty ची एक निर्मिती ·"
+  "footer.signature": "Kiaan Ganesh Shetty ची एक निर्मिती ·",
+  "chat.encrypted_banner": "🔒 या चॅटमधील मेसेज एंड-टू-एंड एन्क्रिप्टेड आहेत. फक्त तुम्ही आणि {name} हे वाचू शकता.",
+  "chat.encrypted_banner_group": "🔒 या ग्रुपमधील मेसेज एंड-टू-एंड एन्क्रिप्टेड आहेत. फक्त सदस्य हे वाचू शकतात.",
+  "chat.loading_encrypted": "🔒 एन्क्रिप्टेड मेसेज लोड होत आहेत…"
 }

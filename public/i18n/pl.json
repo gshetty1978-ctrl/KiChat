@@ -7,14 +7,12 @@
   "brand.feature2.sub": "Krystalicznie czyste audio, bezpośrednio przez WebRTC — bez serwera pośredniczącego.",
   "brand.feature3.title": "Połączenia wideo",
   "brand.feature3.sub": "Twarzą w twarz, bezpośrednio między przeglądarkami, z pełną kontrolą mikrofonu i kamery.",
-
   "auth.login.title": "Zaloguj się",
   "auth.login.sub_prefix": "Nowy tutaj?",
   "auth.login.sub_link": "Utwórz konto",
   "auth.login.username": "Nazwa użytkownika",
   "auth.login.password": "Hasło",
   "auth.login.submit": "Zaloguj się",
-
   "auth.signup.title": "Utwórz konto",
   "auth.signup.sub_prefix": "Masz już konto w K1Chat?",
   "auth.signup.sub_link": "Zaloguj się",
@@ -23,15 +21,12 @@
   "auth.signup.password": "Hasło",
   "auth.signup.password_hint": "Co najmniej 6 znaków",
   "auth.signup.submit": "Utwórz konto",
-
   "install.button": "Zainstaluj K1Chat",
-
   "nav.chats": "Czaty",
   "nav.toggle_theme": "Zmień motyw",
   "nav.logout": "Wyloguj się",
   "nav.edit_avatar": "Edytuj zdjęcie profilowe",
   "nav.language": "Język",
-
   "sidebar.title": "Wiadomości",
   "sidebar.search": "Szukaj…",
   "sidebar.tab.all": "Wszystkie",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "Nikt jeszcze się nie zarejestrował. Udostępnij link do aplikacji, aby inni mogli dołączyć.",
   "sidebar.say_hi": "Przywitaj się 👋",
   "sidebar.no_messages_yet": "Brak wiadomości",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "Wybierz kogoś z listy, aby rozpocząć czat.",
   "chat.input.placeholder": "Napisz wiadomość…",
@@ -57,7 +51,6 @@
   "chat.offline": "Niedostępny",
   "chat.online_count": "{n} online",
   "chat.photo": "📷 Zdjęcie",
-
   "call.incoming_voice": "Połączenie głosowe przychodzące…",
   "call.incoming_video": "Połączenie wideo przychodzące…",
   "call.calling": "Dzwonię…",
@@ -70,7 +63,6 @@
   "call.mute": "Wycisz",
   "call.camera": "Kamera",
   "call.end": "Zakończ połączenie",
-
   "modal.new_chat.title": "Nowy czat",
   "modal.new_chat.dm_tab": "Wiadomość bezpośrednia",
   "modal.new_chat.group_tab": "Grupa",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "Wybierz co najmniej jedną osobę.",
   "modal.new_chat.create_group": "Utwórz grupę",
   "modal.new_chat.no_users": "Nikt jeszcze się nie zarejestrował.",
-
   "modal.avatar.title": "Zdjęcie profilowe",
   "modal.avatar.choose": "Wybierz zdjęcie",
   "modal.avatar.remove": "Usuń zdjęcie",
-
   "modal.group_settings.title": "Ustawienia grupy",
   "modal.group_settings.restricted_title": "Tylko administratorzy mogą wysyłać wiadomości",
   "modal.group_settings.restricted_sub": "Wszyscy mogą nadal czytać i reagować, ale nie publikować.",
   "modal.group_settings.members": "Członkowie",
   "modal.group_settings.admin_badge": "ADMIN",
   "modal.group_settings.make_admin": "Ustaw jako admina",
-
   "close": "Zamknij",
-
   "toast.call_ended": "Połączenie zakończone",
   "toast.call_declined": "Połączenie odrzucone",
   "toast.mic_cam_error": "Brak dostępu do {device}",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} nie skonfigurował(a) jeszcze szyfrowania (musi raz otworzyć K1Chat).",
   "toast.added_to_group": "Dodano do \"{name}\"",
   "toast.group_key_load_error": "Nie można załadować klucza szyfrowania tej grupy.",
-
-  "footer.signature": "Dzieło Kiaan Ganesh Shetty ·"
+  "footer.signature": "Dzieło Kiaan Ganesh Shetty ·",
+  "chat.encrypted_banner": "🔒 Wiadomości w tym czacie są szyfrowane end-to-end. Tylko ty i {name} możecie je odczytać.",
+  "chat.encrypted_banner_group": "🔒 Wiadomości w tej grupie są szyfrowane end-to-end. Tylko członkowie mogą je odczytać.",
+  "chat.loading_encrypted": "🔒 Ładowanie zaszyfrowanych wiadomości…"
 }

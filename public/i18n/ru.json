@@ -7,14 +7,12 @@
   "brand.feature2.sub": "Кристально чистый звук напрямую через WebRTC — без промежуточного сервера.",
   "brand.feature3.title": "Видеозвонки",
   "brand.feature3.sub": "Лицом к лицу, напрямую между браузерами, с полным контролем микрофона и камеры.",
-
   "auth.login.title": "Вход",
   "auth.login.sub_prefix": "Впервые здесь?",
   "auth.login.sub_link": "Создать аккаунт",
   "auth.login.username": "Имя пользователя",
   "auth.login.password": "Пароль",
   "auth.login.submit": "Войти",
-
   "auth.signup.title": "Создайте аккаунт",
   "auth.signup.sub_prefix": "Уже есть аккаунт в K1Chat?",
   "auth.signup.sub_link": "Войти",
@@ -23,15 +21,12 @@
   "auth.signup.password": "Пароль",
   "auth.signup.password_hint": "Минимум 6 символов",
   "auth.signup.submit": "Создать аккаунт",
-
   "install.button": "Установить K1Chat",
-
   "nav.chats": "Чаты",
   "nav.toggle_theme": "Сменить тему",
   "nav.logout": "Выйти",
   "nav.edit_avatar": "Изменить фото профиля",
   "nav.language": "Язык",
-
   "sidebar.title": "Сообщения",
   "sidebar.search": "Поиск…",
   "sidebar.tab.all": "Все",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "Пока никто больше не зарегистрировался. Поделитесь ссылкой на приложение.",
   "sidebar.say_hi": "Поздоровайтесь 👋",
   "sidebar.no_messages_yet": "Пока нет сообщений",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "Выберите кого-нибудь из списка, чтобы начать чат.",
   "chat.input.placeholder": "Напишите сообщение…",
@@ -57,7 +51,6 @@
   "chat.offline": "Не в сети",
   "chat.online_count": "{n} в сети",
   "chat.photo": "📷 Фото",
-
   "call.incoming_voice": "Входящий голосовой звонок…",
   "call.incoming_video": "Входящий видеозвонок…",
   "call.calling": "Звонок…",
@@ -70,7 +63,6 @@
   "call.mute": "Без звука",
   "call.camera": "Камера",
   "call.end": "Завершить звонок",
-
   "modal.new_chat.title": "Новый чат",
   "modal.new_chat.dm_tab": "Личное сообщение",
   "modal.new_chat.group_tab": "Группа",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "Выберите хотя бы ещё одного человека.",
   "modal.new_chat.create_group": "Создать группу",
   "modal.new_chat.no_users": "Пока никто больше не зарегистрировался.",
-
   "modal.avatar.title": "Фото профиля",
   "modal.avatar.choose": "Выбрать фото",
   "modal.avatar.remove": "Удалить фото",
-
   "modal.group_settings.title": "Настройки группы",
   "modal.group_settings.restricted_title": "Только админы могут отправлять сообщения",
   "modal.group_settings.restricted_sub": "Остальные могут читать и реагировать, но не публиковать.",
   "modal.group_settings.members": "Участники",
   "modal.group_settings.admin_badge": "АДМИН",
   "modal.group_settings.make_admin": "Сделать админом",
-
   "close": "Закрыть",
-
   "toast.call_ended": "Звонок завершён",
   "toast.call_declined": "Звонок отклонён",
   "toast.mic_cam_error": "Нет доступа к {device}",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} ещё не настроил(а) шифрование (нужно открыть K1Chat один раз).",
   "toast.added_to_group": "Добавлено в \"{name}\"",
   "toast.group_key_load_error": "Не удалось загрузить ключ шифрования этой группы.",
-
-  "footer.signature": "Создание Kiaan Ganesh Shetty ·"
+  "footer.signature": "Создание Kiaan Ganesh Shetty ·",
+  "chat.encrypted_banner": "🔒 Сообщения в этом чате защищены сквозным шифрованием. Прочитать их можете только вы и {name}.",
+  "chat.encrypted_banner_group": "🔒 Сообщения в этой группе защищены сквозным шифрованием. Прочитать их могут только участники.",
+  "chat.loading_encrypted": "🔒 Загрузка зашифрованных сообщений…"
 }

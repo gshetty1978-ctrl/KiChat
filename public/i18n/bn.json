@@ -7,14 +7,12 @@
   "brand.feature2.sub": "WebRTC-এর মাধ্যমে সরাসরি, পরিষ্কার অডিও — মাঝখানে কোনো সার্ভার ছাড়াই।",
   "brand.feature3.title": "ভিডিও কল",
   "brand.feature3.sub": "ব্রাউজারের মধ্যে সরাসরি মুখোমুখি কথোপকথন, মাইক্রোফোন ও ক্যামেরার সম্পূর্ণ নিয়ন্ত্রণ সহ।",
-
   "auth.login.title": "লগ ইন করুন",
   "auth.login.sub_prefix": "নতুন এসেছেন?",
   "auth.login.sub_link": "অ্যাকাউন্ট তৈরি করুন",
   "auth.login.username": "ইউজারনেম",
   "auth.login.password": "পাসওয়ার্ড",
   "auth.login.submit": "লগ ইন করুন",
-
   "auth.signup.title": "আপনার অ্যাকাউন্ট তৈরি করুন",
   "auth.signup.sub_prefix": "ইতিমধ্যে K1Chat-এ আছেন?",
   "auth.signup.sub_link": "লগ ইন করুন",
@@ -23,15 +21,12 @@
   "auth.signup.password": "পাসওয়ার্ড",
   "auth.signup.password_hint": "কমপক্ষে ৬ অক্ষর",
   "auth.signup.submit": "অ্যাকাউন্ট তৈরি করুন",
-
   "install.button": "K1Chat ইনস্টল করুন",
-
   "nav.chats": "চ্যাট",
   "nav.toggle_theme": "থিম পরিবর্তন করুন",
   "nav.logout": "লগ আউট",
   "nav.edit_avatar": "প্রোফাইল ছবি পরিবর্তন করুন",
   "nav.language": "ভাষা",
-
   "sidebar.title": "মেসেজ",
   "sidebar.search": "খুঁজুন…",
   "sidebar.tab.all": "সব",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "এখনো আর কেউ সাইন আপ করেনি। অন্যদের যোগ দিতে অ্যাপ লিংক শেয়ার করুন।",
   "sidebar.say_hi": "হাই বলুন 👋",
   "sidebar.no_messages_yet": "এখনো কোনো মেসেজ নেই",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "চ্যাট শুরু করতে তালিকা থেকে কাউকে বেছে নিন।",
   "chat.input.placeholder": "একটি মেসেজ লিখুন…",
@@ -57,7 +51,6 @@
   "chat.offline": "অফলাইন",
   "chat.online_count": "{n} জন অনলাইন",
   "chat.photo": "📷 ছবি",
-
   "call.incoming_voice": "আগত ভয়েস কল…",
   "call.incoming_video": "আগত ভিডিও কল…",
   "call.calling": "কল করা হচ্ছে…",
@@ -70,7 +63,6 @@
   "call.mute": "মিউট",
   "call.camera": "ক্যামেরা",
   "call.end": "কল শেষ করুন",
-
   "modal.new_chat.title": "নতুন চ্যাট",
   "modal.new_chat.dm_tab": "সরাসরি মেসেজ",
   "modal.new_chat.group_tab": "গ্রুপ",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "অন্তত আরও একজনকে বেছে নিন।",
   "modal.new_chat.create_group": "গ্রুপ তৈরি করুন",
   "modal.new_chat.no_users": "এখনো আর কেউ সাইন আপ করেনি।",
-
   "modal.avatar.title": "প্রোফাইল ছবি",
   "modal.avatar.choose": "ছবি বেছে নিন",
   "modal.avatar.remove": "ছবি সরান",
-
   "modal.group_settings.title": "গ্রুপ সেটিংস",
   "modal.group_settings.restricted_title": "শুধুমাত্র অ্যাডমিনরা মেসেজ পাঠাতে পারবেন",
   "modal.group_settings.restricted_sub": "সবাই এখনও পড়তে ও প্রতিক্রিয়া জানাতে পারবে, শুধু পোস্ট করতে পারবে না।",
   "modal.group_settings.members": "সদস্য",
   "modal.group_settings.admin_badge": "অ্যাডমিন",
   "modal.group_settings.make_admin": "অ্যাডমিন করুন",
-
   "close": "বন্ধ করুন",
-
   "toast.call_ended": "কল শেষ হয়েছে",
   "toast.call_declined": "কল প্রত্যাখ্যান করা হয়েছে",
   "toast.mic_cam_error": "{device} অ্যাক্সেস করা যায়নি",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} এখনো এনক্রিপশন সেট আপ করেননি (একবার K1Chat খুলতে হবে)।",
   "toast.added_to_group": "\"{name}\"-এ যোগ করা হয়েছে",
   "toast.group_key_load_error": "এই গ্রুপের এনক্রিপশন কী লোড করা যায়নি।",
-
-  "footer.signature": "Kiaan Ganesh Shetty-র একটি সৃষ্টি ·"
+  "footer.signature": "Kiaan Ganesh Shetty-র একটি সৃষ্টি ·",
+  "chat.encrypted_banner": "🔒 এই চ্যাটের মেসেজগুলো এন্ড-টু-এন্ড এনক্রিপ্টেড। শুধু আপনি এবং {name} এগুলো পড়তে পারবেন।",
+  "chat.encrypted_banner_group": "🔒 এই গ্রুপের মেসেজগুলো এন্ড-টু-এন্ড এনক্রিপ্টেড। শুধু সদস্যরা এগুলো পড়তে পারবেন।",
+  "chat.loading_encrypted": "🔒 এনক্রিপ্টেড মেসেজ লোড হচ্ছে…"
 }

@@ -322,6 +322,7 @@ async function openChat(id) {
   document.getElementById('empty-state').hidden = true;
   document.getElementById('chat-view').hidden = false;
   document.querySelector('.sidebar').classList.add('chat-open');
+  showEncryptedLoading();
 
   const history = await fetchJSON('/api/messages/' + id);
   if (history.length) {
@@ -333,6 +334,29 @@ async function openChat(id) {
   document.getElementById('msg-input').focus();
 
   socket.emit('messages:read', { from: id });
+}
+
+// Shown the instant a chat opens, before history has loaded/decrypted —
+// so there's never a blank panel, and it's clear up front that this
+// conversation is end-to-end encrypted.
+function showEncryptedLoading() {
+  document.getElementById('messages').innerHTML = `
+    <div class="encrypted-loading">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      <span>${t('chat.loading_encrypted')}</span>
+    </div>
+  `;
+}
+
+// A system-message-style banner that opens every conversation, same
+// idea as WhatsApp/Signal's "messages are end-to-end encrypted" notice.
+function encryptedBannerHtml(kind) {
+  const text = kind === 'group'
+    ? t('chat.encrypted_banner_group')
+    : t('chat.encrypted_banner', { name: activeUser ? activeUser.username : '' });
+  return `<div class="encrypted-banner">${escapeHtml(text)}</div>`;
 }
 
 function updateHeaderStatus() {
@@ -363,6 +387,7 @@ async function openGroup(id) {
   document.getElementById('empty-state').hidden = true;
   document.getElementById('chat-view').hidden = false;
   document.querySelector('.sidebar').classList.add('chat-open');
+  showEncryptedLoading();
 
   await ensureGroupKey(activeGroup);
 
@@ -545,7 +570,7 @@ async function cachePreview(msg, kind) {
 async function renderMessages(list, kind) {
   const decrypted = await Promise.all(list.map((m) => decryptMessage(m, kind)));
   const el = document.getElementById('messages');
-  el.innerHTML = decrypted.map((m) => messageHtml(m, kind)).join('');
+  el.innerHTML = encryptedBannerHtml(kind) + decrypted.map((m) => messageHtml(m, kind)).join('');
   el.scrollTop = el.scrollHeight;
 }
 

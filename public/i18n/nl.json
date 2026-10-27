@@ -7,14 +7,12 @@
   "brand.feature2.sub": "Kristalhelder, peer-to-peer audio via WebRTC — zonder tussenliggende server.",
   "brand.feature3.title": "Videogesprekken",
   "brand.feature3.sub": "Rechtstreeks tussen browsers, met volledige controle over microfoon en camera.",
-
   "auth.login.title": "Inloggen",
   "auth.login.sub_prefix": "Nieuw hier?",
   "auth.login.sub_link": "Account aanmaken",
   "auth.login.username": "Gebruikersnaam",
   "auth.login.password": "Wachtwoord",
   "auth.login.submit": "Inloggen",
-
   "auth.signup.title": "Maak je account aan",
   "auth.signup.sub_prefix": "Al een K1Chat-account?",
   "auth.signup.sub_link": "Inloggen",
@@ -23,15 +21,12 @@
   "auth.signup.password": "Wachtwoord",
   "auth.signup.password_hint": "Minimaal 6 tekens",
   "auth.signup.submit": "Account aanmaken",
-
   "install.button": "K1Chat installeren",
-
   "nav.chats": "Chats",
   "nav.toggle_theme": "Thema wisselen",
   "nav.logout": "Uitloggen",
   "nav.edit_avatar": "Profielfoto bewerken",
   "nav.language": "Taal",
-
   "sidebar.title": "Berichten",
   "sidebar.search": "Zoeken…",
   "sidebar.tab.all": "Alle",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "Nog niemand anders heeft zich aangemeld. Deel de app-link zodat anderen kunnen meedoen.",
   "sidebar.say_hi": "Zeg hallo 👋",
   "sidebar.no_messages_yet": "Nog geen berichten",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "Kies iemand uit de lijst om te chatten.",
   "chat.input.placeholder": "Typ een bericht…",
@@ -57,7 +51,6 @@
   "chat.offline": "Offline",
   "chat.online_count": "{n} online",
   "chat.photo": "📷 Foto",
-
   "call.incoming_voice": "Inkomend spraakgesprek…",
   "call.incoming_video": "Inkomend videogesprek…",
   "call.calling": "Bellen…",
@@ -70,7 +63,6 @@
   "call.mute": "Dempen",
   "call.camera": "Camera",
   "call.end": "Gesprek beëindigen",
-
   "modal.new_chat.title": "Nieuwe chat",
   "modal.new_chat.dm_tab": "Direct bericht",
   "modal.new_chat.group_tab": "Groep",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "Kies minstens nog één persoon.",
   "modal.new_chat.create_group": "Groep aanmaken",
   "modal.new_chat.no_users": "Nog niemand anders heeft zich aangemeld.",
-
   "modal.avatar.title": "Profielfoto",
   "modal.avatar.choose": "Foto kiezen",
   "modal.avatar.remove": "Foto verwijderen",
-
   "modal.group_settings.title": "Groepsinstellingen",
   "modal.group_settings.restricted_title": "Alleen beheerders kunnen berichten sturen",
   "modal.group_settings.restricted_sub": "Iedereen kan nog steeds lezen en reageren, maar niet plaatsen.",
   "modal.group_settings.members": "Leden",
   "modal.group_settings.admin_badge": "ADMIN",
   "modal.group_settings.make_admin": "Maak beheerder",
-
   "close": "Sluiten",
-
   "toast.call_ended": "Gesprek beëindigd",
   "toast.call_declined": "Gesprek geweigerd",
   "toast.mic_cam_error": "Geen toegang tot {device}",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} heeft versleuteling nog niet ingesteld (moet K1Chat één keer openen).",
   "toast.added_to_group": "Toegevoegd aan \"{name}\"",
   "toast.group_key_load_error": "De versleutelingssleutel van deze groep kon niet worden geladen.",
-
-  "footer.signature": "Een creatie van Kiaan Ganesh Shetty ·"
+  "footer.signature": "Een creatie van Kiaan Ganesh Shetty ·",
+  "chat.encrypted_banner": "🔒 Berichten in deze chat zijn end-to-end versleuteld. Alleen jij en {name} kunnen ze lezen.",
+  "chat.encrypted_banner_group": "🔒 Berichten in deze groep zijn end-to-end versleuteld. Alleen leden kunnen ze lezen.",
+  "chat.loading_encrypted": "🔒 Versleutelde berichten laden…"
 }

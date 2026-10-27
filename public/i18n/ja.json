@@ -7,14 +7,12 @@
   "brand.feature2.sub": "WebRTCによるピアツーピアのクリアな音声 — 仲介サーバーなし。",
   "brand.feature3.title": "ビデオ通話",
   "brand.feature3.sub": "ブラウザ同士が直接つながる対面通話。マイクとカメラを完全制御。",
-
   "auth.login.title": "ログイン",
   "auth.login.sub_prefix": "初めてですか？",
   "auth.login.sub_link": "アカウントを作成",
   "auth.login.username": "ユーザー名",
   "auth.login.password": "パスワード",
   "auth.login.submit": "ログイン",
-
   "auth.signup.title": "アカウントを作成",
   "auth.signup.sub_prefix": "すでにK1Chatをお使いですか？",
   "auth.signup.sub_link": "ログイン",
@@ -23,15 +21,12 @@
   "auth.signup.password": "パスワード",
   "auth.signup.password_hint": "6文字以上",
   "auth.signup.submit": "アカウントを作成",
-
   "install.button": "K1Chatをインストール",
-
   "nav.chats": "チャット",
   "nav.toggle_theme": "テーマを切り替え",
   "nav.logout": "ログアウト",
   "nav.edit_avatar": "プロフィール写真を編集",
   "nav.language": "言語",
-
   "sidebar.title": "メッセージ",
   "sidebar.search": "検索…",
   "sidebar.tab.all": "すべて",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "まだ他に誰も登録していません。アプリのリンクを共有して招待しましょう。",
   "sidebar.say_hi": "挨拶してみましょう 👋",
   "sidebar.no_messages_yet": "まだメッセージがありません",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "リストから相手を選んでチャットを始めましょう。",
   "chat.input.placeholder": "メッセージを入力…",
@@ -57,7 +51,6 @@
   "chat.offline": "オフライン",
   "chat.online_count": "{n}人がオンライン",
   "chat.photo": "📷 写真",
-
   "call.incoming_voice": "音声着信中…",
   "call.incoming_video": "ビデオ着信中…",
   "call.calling": "発信中…",
@@ -70,7 +63,6 @@
   "call.mute": "ミュート",
   "call.camera": "カメラ",
   "call.end": "通話を終了",
-
   "modal.new_chat.title": "新しいチャット",
   "modal.new_chat.dm_tab": "ダイレクトメッセージ",
   "modal.new_chat.group_tab": "グループ",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "もう1人以上を選択してください。",
   "modal.new_chat.create_group": "グループを作成",
   "modal.new_chat.no_users": "まだ他に誰も登録していません。",
-
   "modal.avatar.title": "プロフィール写真",
   "modal.avatar.choose": "写真を選択",
   "modal.avatar.remove": "写真を削除",
-
   "modal.group_settings.title": "グループ設定",
   "modal.group_settings.restricted_title": "管理者のみメッセージを送信可能",
   "modal.group_settings.restricted_sub": "全員が閲覧・リアクションできますが、投稿はできません。",
   "modal.group_settings.members": "メンバー",
   "modal.group_settings.admin_badge": "管理者",
   "modal.group_settings.make_admin": "管理者にする",
-
   "close": "閉じる",
-
   "toast.call_ended": "通話終了",
   "toast.call_declined": "通話を拒否しました",
   "toast.mic_cam_error": "{device}にアクセスできませんでした",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name}さんはまだ暗号化を設定していません（一度K1Chatを開く必要があります）。",
   "toast.added_to_group": "\"{name}\"に追加されました",
   "toast.group_key_load_error": "このグループの暗号化キーを読み込めませんでした。",
-
-  "footer.signature": "Kiaan Ganesh Shetty による作品 ·"
+  "footer.signature": "Kiaan Ganesh Shetty による作品 ·",
+  "chat.encrypted_banner": "🔒 このチャットのメッセージはエンドツーエンドで暗号化されています。あなたと{name}だけが読めます。",
+  "chat.encrypted_banner_group": "🔒 このグループのメッセージはエンドツーエンドで暗号化されています。メンバーだけが読めます。",
+  "chat.loading_encrypted": "🔒 暗号化されたメッセージを読み込み中…"
 }

@@ -7,14 +7,12 @@
   "brand.feature2.sub": "Audio nítido y directo mediante WebRTC — sin servidor intermediario.",
   "brand.feature3.title": "Videollamadas",
   "brand.feature3.sub": "Cara a cara, directo entre navegadores, con control total de micrófono y cámara.",
-
   "auth.login.title": "Iniciar sesión",
   "auth.login.sub_prefix": "¿Nuevo aquí?",
   "auth.login.sub_link": "Crear una cuenta",
   "auth.login.username": "Usuario",
   "auth.login.password": "Contraseña",
   "auth.login.submit": "Iniciar sesión",
-
   "auth.signup.title": "Crea tu cuenta",
   "auth.signup.sub_prefix": "¿Ya tienes cuenta en K1Chat?",
   "auth.signup.sub_link": "Iniciar sesión",
@@ -23,15 +21,12 @@
   "auth.signup.password": "Contraseña",
   "auth.signup.password_hint": "Al menos 6 caracteres",
   "auth.signup.submit": "Crear cuenta",
-
   "install.button": "Instalar K1Chat",
-
   "nav.chats": "Chats",
   "nav.toggle_theme": "Cambiar tema",
   "nav.logout": "Cerrar sesión",
   "nav.edit_avatar": "Editar foto de perfil",
   "nav.language": "Idioma",
-
   "sidebar.title": "Mensajes",
   "sidebar.search": "Buscar…",
   "sidebar.tab.all": "Todos",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "Todavía nadie más se ha registrado. Comparte el enlace para que otros se unan.",
   "sidebar.say_hi": "Saluda 👋",
   "sidebar.no_messages_yet": "Sin mensajes todavía",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "Elige a alguien de la lista para empezar a chatear.",
   "chat.input.placeholder": "Escribe un mensaje…",
@@ -57,7 +51,6 @@
   "chat.offline": "Desconectado",
   "chat.online_count": "{n} en línea",
   "chat.photo": "📷 Foto",
-
   "call.incoming_voice": "Llamada de voz entrante…",
   "call.incoming_video": "Videollamada entrante…",
   "call.calling": "Llamando…",
@@ -70,7 +63,6 @@
   "call.mute": "Silenciar",
   "call.camera": "Cámara",
   "call.end": "Finalizar llamada",
-
   "modal.new_chat.title": "Nuevo chat",
   "modal.new_chat.dm_tab": "Mensaje directo",
   "modal.new_chat.group_tab": "Grupo",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "Elige al menos a otra persona.",
   "modal.new_chat.create_group": "Crear grupo",
   "modal.new_chat.no_users": "Todavía nadie más se ha registrado.",
-
   "modal.avatar.title": "Foto de perfil",
   "modal.avatar.choose": "Elegir foto",
   "modal.avatar.remove": "Quitar foto",
-
   "modal.group_settings.title": "Ajustes del grupo",
   "modal.group_settings.restricted_title": "Solo los administradores pueden enviar mensajes",
   "modal.group_settings.restricted_sub": "Todos pueden seguir leyendo y reaccionar, pero no publicar.",
   "modal.group_settings.members": "Miembros",
   "modal.group_settings.admin_badge": "ADMIN",
   "modal.group_settings.make_admin": "Hacer admin",
-
   "close": "Cerrar",
-
   "toast.call_ended": "Llamada finalizada",
   "toast.call_declined": "Llamada rechazada",
   "toast.mic_cam_error": "No se pudo acceder a {device}",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} aún no ha configurado el cifrado (debe abrir K1Chat una vez).",
   "toast.added_to_group": "Añadido a \"{name}\"",
   "toast.group_key_load_error": "No se pudo cargar la clave de cifrado de este grupo.",
-
-  "footer.signature": "Una creación de Kiaan Ganesh Shetty ·"
+  "footer.signature": "Una creación de Kiaan Ganesh Shetty ·",
+  "chat.encrypted_banner": "🔒 Los mensajes de este chat están cifrados de extremo a extremo. Solo tú y {name} pueden leerlos.",
+  "chat.encrypted_banner_group": "🔒 Los mensajes de este grupo están cifrados de extremo a extremo. Solo los miembros pueden leerlos.",
+  "chat.loading_encrypted": "🔒 Cargando mensajes cifrados…"
 }
