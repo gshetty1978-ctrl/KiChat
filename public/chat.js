@@ -320,6 +320,7 @@ async function openChat(id) {
 
   document.getElementById('empty-state').hidden = true;
   document.getElementById('chat-view').hidden = false;
+  document.querySelector('.sidebar').classList.add('chat-open');
 
   const history = await fetchJSON('/api/messages/' + id);
   if (history.length) {
@@ -338,6 +339,12 @@ function updateHeaderStatus() {
   document.getElementById('header-status').textContent = online.has(activeUser.id) ? '● Online' : '○ Offline';
 }
 
+// Mobile only: the chat view sits on top of the sidebar there, so this
+// is how you get back to the chat list.
+function backToSidebar() {
+  document.querySelector('.sidebar').classList.remove('chat-open');
+}
+
 // ── groups ───────────────────────────────────────────────────────────────
 async function openGroup(id) {
   activeGroup = groupsById.get(id);
@@ -354,6 +361,7 @@ async function openGroup(id) {
 
   document.getElementById('empty-state').hidden = true;
   document.getElementById('chat-view').hidden = false;
+  document.querySelector('.sidebar').classList.add('chat-open');
 
   await ensureGroupKey(activeGroup);
 
