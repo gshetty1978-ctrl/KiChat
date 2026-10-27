@@ -7,14 +7,12 @@
   "brand.feature2.sub": "Audio jernih, peer-to-peer lewat WebRTC — tanpa server perantara.",
   "brand.feature3.title": "Panggilan video",
   "brand.feature3.sub": "Tatap muka langsung antar-browser, dengan kontrol penuh mikrofon dan kamera.",
-
   "auth.login.title": "Masuk",
   "auth.login.sub_prefix": "Baru di sini?",
   "auth.login.sub_link": "Buat akun",
   "auth.login.username": "Nama pengguna",
   "auth.login.password": "Kata sandi",
   "auth.login.submit": "Masuk",
-
   "auth.signup.title": "Buat akunmu",
   "auth.signup.sub_prefix": "Sudah punya akun K1Chat?",
   "auth.signup.sub_link": "Masuk",
@@ -23,15 +21,12 @@
   "auth.signup.password": "Kata sandi",
   "auth.signup.password_hint": "Minimal 6 karakter",
   "auth.signup.submit": "Buat akun",
-
   "install.button": "Instal K1Chat",
-
   "nav.chats": "Obrolan",
   "nav.toggle_theme": "Ganti tema",
   "nav.logout": "Keluar",
   "nav.edit_avatar": "Edit foto profil",
   "nav.language": "Bahasa",
-
   "sidebar.title": "Pesan",
   "sidebar.search": "Cari…",
   "sidebar.tab.all": "Semua",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "Belum ada orang lain yang mendaftar. Bagikan tautan aplikasi agar orang lain bisa bergabung.",
   "sidebar.say_hi": "Sapa dulu 👋",
   "sidebar.no_messages_yet": "Belum ada pesan",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "Pilih seseorang dari daftar untuk mulai mengobrol.",
   "chat.input.placeholder": "Tulis pesan…",
@@ -57,7 +51,6 @@
   "chat.offline": "Offline",
   "chat.online_count": "{n} online",
   "chat.photo": "📷 Foto",
-
   "call.incoming_voice": "Panggilan suara masuk…",
   "call.incoming_video": "Panggilan video masuk…",
   "call.calling": "Memanggil…",
@@ -70,7 +63,6 @@
   "call.mute": "Bisukan",
   "call.camera": "Kamera",
   "call.end": "Akhiri panggilan",
-
   "modal.new_chat.title": "Obrolan baru",
   "modal.new_chat.dm_tab": "Pesan langsung",
   "modal.new_chat.group_tab": "Grup",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "Pilih setidaknya satu orang lagi.",
   "modal.new_chat.create_group": "Buat grup",
   "modal.new_chat.no_users": "Belum ada orang lain yang mendaftar.",
-
   "modal.avatar.title": "Foto profil",
   "modal.avatar.choose": "Pilih foto",
   "modal.avatar.remove": "Hapus foto",
-
   "modal.group_settings.title": "Pengaturan grup",
   "modal.group_settings.restricted_title": "Hanya admin yang bisa mengirim pesan",
   "modal.group_settings.restricted_sub": "Semua orang tetap bisa membaca dan bereaksi, hanya tidak bisa memposting.",
   "modal.group_settings.members": "Anggota",
   "modal.group_settings.admin_badge": "ADMIN",
   "modal.group_settings.make_admin": "Jadikan admin",
-
   "close": "Tutup",
-
   "toast.call_ended": "Panggilan berakhir",
   "toast.call_declined": "Panggilan ditolak",
   "toast.mic_cam_error": "Tidak dapat mengakses {device}",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} belum menyiapkan enkripsi (perlu membuka K1Chat sekali).",
   "toast.added_to_group": "Ditambahkan ke \"{name}\"",
   "toast.group_key_load_error": "Tidak dapat memuat kunci enkripsi grup ini.",
-
-  "footer.signature": "Sebuah karya Kiaan Ganesh Shetty ·"
+  "footer.signature": "Sebuah karya Kiaan Ganesh Shetty ·",
+  "chat.encrypted_banner": "🔒 Pesan dalam obrolan ini dienkripsi end-to-end. Hanya kamu dan {name} yang bisa membacanya.",
+  "chat.encrypted_banner_group": "🔒 Pesan dalam grup ini dienkripsi end-to-end. Hanya anggota yang bisa membacanya.",
+  "chat.loading_encrypted": "🔒 Memuat pesan terenkripsi…"
 }

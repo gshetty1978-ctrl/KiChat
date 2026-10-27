@@ -7,14 +7,12 @@
   "brand.feature2.sub": "WebRTC üzerinden net, uçtan uca ses — aracı sunucu yok.",
   "brand.feature3.title": "Görüntülü aramalar",
   "brand.feature3.sub": "Tarayıcılar arasında doğrudan, yüz yüze — tam mikrofon ve kamera kontrolüyle.",
-
   "auth.login.title": "Giriş yap",
   "auth.login.sub_prefix": "Yeni misin?",
   "auth.login.sub_link": "Hesap oluştur",
   "auth.login.username": "Kullanıcı adı",
   "auth.login.password": "Şifre",
   "auth.login.submit": "Giriş yap",
-
   "auth.signup.title": "Hesabını oluştur",
   "auth.signup.sub_prefix": "K1Chat'te zaten hesabın var mı?",
   "auth.signup.sub_link": "Giriş yap",
@@ -23,15 +21,12 @@
   "auth.signup.password": "Şifre",
   "auth.signup.password_hint": "En az 6 karakter",
   "auth.signup.submit": "Hesap oluştur",
-
   "install.button": "K1Chat'i yükle",
-
   "nav.chats": "Sohbetler",
   "nav.toggle_theme": "Temayı değiştir",
   "nav.logout": "Çıkış yap",
   "nav.edit_avatar": "Profil fotoğrafını düzenle",
   "nav.language": "Dil",
-
   "sidebar.title": "Mesajlar",
   "sidebar.search": "Ara…",
   "sidebar.tab.all": "Tümü",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "Henüz başka kimse kayıt olmadı. Uygulama bağlantısını paylaş, başkaları katılsın.",
   "sidebar.say_hi": "Merhaba de 👋",
   "sidebar.no_messages_yet": "Henüz mesaj yok",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "Sohbete başlamak için listeden birini seç.",
   "chat.input.placeholder": "Bir mesaj yaz…",
@@ -57,7 +51,6 @@
   "chat.offline": "Çevrimdışı",
   "chat.online_count": "{n} çevrimiçi",
   "chat.photo": "📷 Fotoğraf",
-
   "call.incoming_voice": "Gelen sesli arama…",
   "call.incoming_video": "Gelen görüntülü arama…",
   "call.calling": "Aranıyor…",
@@ -70,7 +63,6 @@
   "call.mute": "Sessiz",
   "call.camera": "Kamera",
   "call.end": "Aramayı bitir",
-
   "modal.new_chat.title": "Yeni sohbet",
   "modal.new_chat.dm_tab": "Doğrudan mesaj",
   "modal.new_chat.group_tab": "Grup",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "En az bir kişi daha seç.",
   "modal.new_chat.create_group": "Grup oluştur",
   "modal.new_chat.no_users": "Henüz başka kimse kayıt olmadı.",
-
   "modal.avatar.title": "Profil fotoğrafı",
   "modal.avatar.choose": "Fotoğraf seç",
   "modal.avatar.remove": "Fotoğrafı kaldır",
-
   "modal.group_settings.title": "Grup ayarları",
   "modal.group_settings.restricted_title": "Yalnızca yöneticiler mesaj gönderebilir",
   "modal.group_settings.restricted_sub": "Herkes okuyup tepki verebilir, sadece paylaşamaz.",
   "modal.group_settings.members": "Üyeler",
   "modal.group_settings.admin_badge": "YÖNETİCİ",
   "modal.group_settings.make_admin": "Yönetici yap",
-
   "close": "Kapat",
-
   "toast.call_ended": "Arama sona erdi",
   "toast.call_declined": "Arama reddedildi",
   "toast.mic_cam_error": "{device} erişilemedi",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} henüz şifrelemeyi ayarlamadı (K1Chat'i bir kez açması gerekiyor).",
   "toast.added_to_group": "\"{name}\" grubuna eklendi",
   "toast.group_key_load_error": "Bu grubun şifreleme anahtarı yüklenemedi.",
-
-  "footer.signature": "Kiaan Ganesh Shetty'nin bir eseri ·"
+  "footer.signature": "Kiaan Ganesh Shetty'nin bir eseri ·",
+  "chat.encrypted_banner": "🔒 Bu sohbetteki mesajlar uçtan uca şifrelidir. Yalnızca sen ve {name} okuyabilir.",
+  "chat.encrypted_banner_group": "🔒 Bu gruptaki mesajlar uçtan uca şifrelidir. Yalnızca üyeler okuyabilir.",
+  "chat.loading_encrypted": "🔒 Şifrelenmiş mesajlar yükleniyor…"
 }

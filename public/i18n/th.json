@@ -7,14 +7,12 @@
   "brand.feature2.sub": "เสียงคมชัดแบบ peer-to-peer ผ่าน WebRTC — ไม่ผ่านเซิร์ฟเวอร์กลาง",
   "brand.feature3.title": "วิดีโอคอล",
   "brand.feature3.sub": "เห็นหน้ากันโดยตรงระหว่างเบราว์เซอร์ ควบคุมไมค์และกล้องได้เต็มที่",
-
   "auth.login.title": "เข้าสู่ระบบ",
   "auth.login.sub_prefix": "เพิ่งมาครั้งแรก?",
   "auth.login.sub_link": "สร้างบัญชี",
   "auth.login.username": "ชื่อผู้ใช้",
   "auth.login.password": "รหัสผ่าน",
   "auth.login.submit": "เข้าสู่ระบบ",
-
   "auth.signup.title": "สร้างบัญชีของคุณ",
   "auth.signup.sub_prefix": "มีบัญชี K1Chat อยู่แล้ว?",
   "auth.signup.sub_link": "เข้าสู่ระบบ",
@@ -23,15 +21,12 @@
   "auth.signup.password": "รหัสผ่าน",
   "auth.signup.password_hint": "อย่างน้อย 6 ตัวอักษร",
   "auth.signup.submit": "สร้างบัญชี",
-
   "install.button": "ติดตั้ง K1Chat",
-
   "nav.chats": "แชท",
   "nav.toggle_theme": "สลับธีม",
   "nav.logout": "ออกจากระบบ",
   "nav.edit_avatar": "แก้ไขรูปโปรไฟล์",
   "nav.language": "ภาษา",
-
   "sidebar.title": "ข้อความ",
   "sidebar.search": "ค้นหา…",
   "sidebar.tab.all": "ทั้งหมด",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "ยังไม่มีใครสมัครสมาชิก แชร์ลิงก์แอปเพื่อชวนคนอื่นเข้าร่วม",
   "sidebar.say_hi": "ทักทายกันหน่อย 👋",
   "sidebar.no_messages_yet": "ยังไม่มีข้อความ",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "เลือกคนจากรายการเพื่อเริ่มแชท",
   "chat.input.placeholder": "พิมพ์ข้อความ…",
@@ -57,7 +51,6 @@
   "chat.offline": "ออฟไลน์",
   "chat.online_count": "{n} คนออนไลน์",
   "chat.photo": "📷 รูปภาพ",
-
   "call.incoming_voice": "สายเรียกเข้า…",
   "call.incoming_video": "วิดีโอคอลเรียกเข้า…",
   "call.calling": "กำลังโทร…",
@@ -70,7 +63,6 @@
   "call.mute": "ปิดเสียง",
   "call.camera": "กล้อง",
   "call.end": "วางสาย",
-
   "modal.new_chat.title": "แชทใหม่",
   "modal.new_chat.dm_tab": "ข้อความส่วนตัว",
   "modal.new_chat.group_tab": "กลุ่ม",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "เลือกอีกอย่างน้อยหนึ่งคน",
   "modal.new_chat.create_group": "สร้างกลุ่ม",
   "modal.new_chat.no_users": "ยังไม่มีใครสมัครสมาชิก",
-
   "modal.avatar.title": "รูปโปรไฟล์",
   "modal.avatar.choose": "เลือกรูปภาพ",
   "modal.avatar.remove": "ลบรูปภาพ",
-
   "modal.group_settings.title": "การตั้งค่ากลุ่ม",
   "modal.group_settings.restricted_title": "เฉพาะแอดมินเท่านั้นที่ส่งข้อความได้",
   "modal.group_settings.restricted_sub": "ทุกคนยังอ่านและตอบโต้ได้ แค่โพสต์ไม่ได้",
   "modal.group_settings.members": "สมาชิก",
   "modal.group_settings.admin_badge": "แอดมิน",
   "modal.group_settings.make_admin": "ตั้งเป็นแอดมิน",
-
   "close": "ปิด",
-
   "toast.call_ended": "การโทรสิ้นสุดแล้ว",
   "toast.call_declined": "ปฏิเสธการโทรแล้ว",
   "toast.mic_cam_error": "ไม่สามารถเข้าถึง{device}ได้",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} ยังไม่ได้ตั้งค่าการเข้ารหัส (ต้องเปิด K1Chat สักครั้ง)",
   "toast.added_to_group": "เพิ่มเข้า \"{name}\" แล้ว",
   "toast.group_key_load_error": "ไม่สามารถโหลดกุญแจเข้ารหัสของกลุ่มนี้ได้",
-
-  "footer.signature": "ผลงานโดย Kiaan Ganesh Shetty ·"
+  "footer.signature": "ผลงานโดย Kiaan Ganesh Shetty ·",
+  "chat.encrypted_banner": "🔒 ข้อความในแชทนี้เข้ารหัสแบบ end-to-end คุณและ{name}เท่านั้นที่อ่านได้",
+  "chat.encrypted_banner_group": "🔒 ข้อความในกลุ่มนี้เข้ารหัสแบบ end-to-end เฉพาะสมาชิกเท่านั้นที่อ่านได้",
+  "chat.loading_encrypted": "🔒 กำลังโหลดข้อความที่เข้ารหัส…"
 }

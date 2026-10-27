@@ -7,14 +7,12 @@
   "brand.feature2.sub": "Âm thanh rõ nét, trực tiếp qua WebRTC — không qua máy chủ trung gian.",
   "brand.feature3.title": "Cuộc gọi video",
   "brand.feature3.sub": "Đối mặt trực tiếp giữa các trình duyệt, kiểm soát hoàn toàn mic và camera.",
-
   "auth.login.title": "Đăng nhập",
   "auth.login.sub_prefix": "Mới đến đây?",
   "auth.login.sub_link": "Tạo tài khoản",
   "auth.login.username": "Tên người dùng",
   "auth.login.password": "Mật khẩu",
   "auth.login.submit": "Đăng nhập",
-
   "auth.signup.title": "Tạo tài khoản của bạn",
   "auth.signup.sub_prefix": "Đã có tài khoản K1Chat?",
   "auth.signup.sub_link": "Đăng nhập",
@@ -23,15 +21,12 @@
   "auth.signup.password": "Mật khẩu",
   "auth.signup.password_hint": "Ít nhất 6 ký tự",
   "auth.signup.submit": "Tạo tài khoản",
-
   "install.button": "Cài đặt K1Chat",
-
   "nav.chats": "Trò chuyện",
   "nav.toggle_theme": "Đổi giao diện",
   "nav.logout": "Đăng xuất",
   "nav.edit_avatar": "Sửa ảnh đại diện",
   "nav.language": "Ngôn ngữ",
-
   "sidebar.title": "Tin nhắn",
   "sidebar.search": "Tìm kiếm…",
   "sidebar.tab.all": "Tất cả",
@@ -43,7 +38,6 @@
   "sidebar.empty.all": "Chưa có ai khác đăng ký. Chia sẻ liên kết ứng dụng để mời mọi người tham gia.",
   "sidebar.say_hi": "Chào hỏi nào 👋",
   "sidebar.no_messages_yet": "Chưa có tin nhắn nào",
-
   "chat.empty.title": "K1Chat",
   "chat.empty.sub": "Chọn ai đó từ danh sách để bắt đầu trò chuyện.",
   "chat.input.placeholder": "Nhập tin nhắn…",
@@ -57,7 +51,6 @@
   "chat.offline": "Ngoại tuyến",
   "chat.online_count": "{n} đang trực tuyến",
   "chat.photo": "📷 Ảnh",
-
   "call.incoming_voice": "Cuộc gọi thoại đến…",
   "call.incoming_video": "Cuộc gọi video đến…",
   "call.calling": "Đang gọi…",
@@ -70,7 +63,6 @@
   "call.mute": "Tắt tiếng",
   "call.camera": "Camera",
   "call.end": "Kết thúc cuộc gọi",
-
   "modal.new_chat.title": "Trò chuyện mới",
   "modal.new_chat.dm_tab": "Tin nhắn trực tiếp",
   "modal.new_chat.group_tab": "Nhóm",
@@ -80,20 +72,16 @@
   "modal.new_chat.group_hint": "Chọn ít nhất một người khác.",
   "modal.new_chat.create_group": "Tạo nhóm",
   "modal.new_chat.no_users": "Chưa có ai khác đăng ký.",
-
   "modal.avatar.title": "Ảnh đại diện",
   "modal.avatar.choose": "Chọn ảnh",
   "modal.avatar.remove": "Xóa ảnh",
-
   "modal.group_settings.title": "Cài đặt nhóm",
   "modal.group_settings.restricted_title": "Chỉ quản trị viên được nhắn tin",
   "modal.group_settings.restricted_sub": "Mọi người vẫn có thể đọc và bày tỏ cảm xúc, chỉ không được đăng tin.",
   "modal.group_settings.members": "Thành viên",
   "modal.group_settings.admin_badge": "QUẢN TRỊ",
   "modal.group_settings.make_admin": "Đặt làm quản trị viên",
-
   "close": "Đóng",
-
   "toast.call_ended": "Cuộc gọi đã kết thúc",
   "toast.call_declined": "Cuộc gọi bị từ chối",
   "toast.mic_cam_error": "Không thể truy cập {device}",
@@ -106,6 +94,8 @@
   "toast.no_encryption_yet": "{name} chưa thiết lập mã hóa (cần mở K1Chat một lần).",
   "toast.added_to_group": "Đã thêm vào \"{name}\"",
   "toast.group_key_load_error": "Không thể tải khóa mã hóa của nhóm này.",
-
-  "footer.signature": "Một tác phẩm của Kiaan Ganesh Shetty ·"
+  "footer.signature": "Một tác phẩm của Kiaan Ganesh Shetty ·",
+  "chat.encrypted_banner": "🔒 Tin nhắn trong cuộc trò chuyện này được mã hóa đầu cuối. Chỉ bạn và {name} mới đọc được.",
+  "chat.encrypted_banner_group": "🔒 Tin nhắn trong nhóm này được mã hóa đầu cuối. Chỉ thành viên mới đọc được.",
+  "chat.loading_encrypted": "🔒 Đang tải tin nhắn đã mã hóa…"
 }
