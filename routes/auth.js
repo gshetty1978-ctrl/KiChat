@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { pool } = require('../db');
 const { signToken } = require('../middleware/auth');
+const { isGibberish } = require('../utils/gibberish');
 
 const router = express.Router();
 
@@ -14,6 +15,9 @@ router.post('/register', async (req, res) => {
   }
   if (!USERNAME_RE.test(username)) {
     return res.status(400).json({ error: 'Username must be 3-20 characters: letters, numbers, underscore' });
+  }
+  if (isGibberish(username)) {
+    return res.status(400).json({ error: 'Please pick a real username' });
   }
   if (password.length < 6) {
     return res.status(400).json({ error: 'Password must be at least 6 characters' });
