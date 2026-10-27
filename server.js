@@ -29,7 +29,10 @@ app.use('/api/groups', groupRoutes);
 
 // extensions: ['html'] lets /login, /signup, /chat resolve to their .html
 // files directly, so the browser's address bar never shows the extension.
-app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
+// dotfiles: 'allow' is needed for /.well-known/assetlinks.json (the
+// Android TWA app's domain-ownership proof) - Express ignores dotfile
+// paths by default.
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], dotfiles: 'allow' }));
 
 const server = http.createServer(app);
 const io = new Server(server);
