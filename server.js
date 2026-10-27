@@ -55,10 +55,22 @@ function broadcastPresence() {
 }
 
 // Lets routes/groups.js (which has no access to `io`) tell every new
-// member's sockets live that they were just added to a group.
+// member's sockets live that they were just added to a group. The client
+// refetches the group itself (GET /api/groups/:id) to get its OWN wrapped
+// key, so `myKey` here (whoever's it happens to be) is stripped first.
 app.set('notifyGroupCreated', (group, memberIds) => {
+  const { myKey, ...publicGroup } = group;
   memberIds.forEach((id) => {
-    socketsFor(id).forEach((sid) => io.to(sid).emit('group:new', group));
+    socketsFor(id).forEach((sid) => io.to(sid).emit('group:new', publicGroup));
+  });
+});
+
+// Settings changed (restricted toggle, new admin) — tell every current
+// member live so their header/settings modal update without a reload.
+app.set('notifyGroupUpdated', (group) => {
+  const { myKey, ...publicGroup } = group;
+  group.members.forEach((m) => {
+    socketsFor(m.id).forEach((sid) => io.to(sid).emit('group:updated', publicGroup));
   });
 });
 
@@ -78,23 +90,31 @@ io.on('connection', (socket) => {
   addSocket(userId, socket.id);
   broadcastPresence();
 
-  socket.on('message:send', async ({ to, groupId, body }) => {
-    if (typeof body !== 'string' || !body.trim()) return;
+  // The server never sees plaintext: `ct`/`iv` are an AES-GCM ciphertext
+  // and IV produced client-side (see public/crypto.js). It's stored and
+  // relayed as an opaque JSON envelope — this process has no key to
+  // decrypt it with.
+  socket.on('message:send', async ({ to, groupId, ct, iv, isImage }) => {
+    if (typeof ct !== 'string' || typeof iv !== 'string' || !ct) return;
+    if (ct.length > 1.4 * 1024 * 1024) return; // generous cap over the client's own image-compression target
 
-    const isImage = body.startsWith('[[img]]');
-    if (isImage) {
-      if (body.length > 950 * 1024) return; // over the cap the client already enforces, ignore
-    }
-    const text = isImage ? body : body.slice(0, 4000);
+    const text = JSON.stringify({ ct, iv, isImage: !!isImage });
 
     if (Number.isInteger(groupId)) {
       const memberCheck = await pool.query(
-        'SELECT user_id FROM group_members WHERE group_id = $1',
+        'SELECT user_id, is_admin FROM group_members WHERE group_id = $1',
         [groupId]
       );
-      const memberIds = memberCheck.rows.map((r) => r.user_id);
-      if (!memberIds.includes(userId)) return; // not a member, ignore silently
+      const me = memberCheck.rows.find((r) => r.user_id === userId);
+      if (!me) return; // not a member, ignore silently
 
+      const groupCheck = await pool.query('SELECT restricted FROM groups WHERE id = $1', [groupId]);
+      if (groupCheck.rows[0] && groupCheck.rows[0].restricted && !me.is_admin) {
+        socket.emit('message:error', { groupId, error: 'Only admins can send messages in this group' });
+        return;
+      }
+
+      const memberIds = memberCheck.rows.map((r) => r.user_id);
       const result = await pool.query(
         `INSERT INTO messages (sender_id, group_id, body)
          VALUES ($1, $2, $3)
