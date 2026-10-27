@@ -425,9 +425,12 @@ body {
 }
 .member-make-admin:hover { text-decoration: underline; }
 
+.back-btn { display: none; }
+
 @media (max-width: 700px) {
   .app { grid-template-columns: 1fr; }
   .nav-rail { display: none; }
   .sidebar { position: fixed; inset: 0; z-index: 50; width: 100%; }
   .sidebar.chat-open { display: none; }
+  .back-btn { display: flex; }
 }
