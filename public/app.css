@@ -195,15 +195,36 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 13px; color: #fff; margin-top: 8px;
   box-shadow: 0 0 0 2px var(--accent);
+  border: none; padding: 0; font-family: inherit; cursor: pointer; overflow: hidden; flex-shrink: 0;
 }
 
-.sidebar { background: var(--bg1); display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,.05); overflow: hidden; }
+.sidebar { position: relative; background: var(--bg1); display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,.05); overflow: hidden; }
 .sidebar-head { padding: 16px; border-bottom: 1px solid rgba(255,255,255,.05); }
 .sidebar-title { font-weight: 700; font-size: 18px; margin-bottom: 12px; }
 .search-bar { display: flex; align-items: center; gap: 8px; background: var(--bg2); border-radius: var(--radius-sm); padding: 8px 12px; }
 .search-bar svg { color: var(--fg3); flex-shrink: 0; width: 16px; height: 16px; }
 .search-bar input { background: none; border: none; outline: none; color: var(--fg); font-family: inherit; font-size: 13px; width: 100%; }
 .search-bar input::placeholder { color: var(--fg3); }
+
+.tabs { display: flex; gap: 4px; padding: 10px 16px 0; }
+.tab-btn {
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; background: none; color: var(--fg3);
+  transition: background .15s, color .15s;
+}
+.tab-btn.active { background: var(--accent-dim); color: var(--accent); }
+.tab-btn:hover:not(.active) { background: var(--bg3); color: var(--fg2); }
+
+.fab-new {
+  position: absolute; right: 18px; bottom: 54px; z-index: 5;
+  width: 48px; height: 48px; border-radius: 50%; border: none;
+  background: var(--accent); color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(62,207,178,.35);
+  transition: background .15s, transform .1s;
+}
+.fab-new:hover { background: var(--accent2); transform: scale(1.06); }
+.fab-new svg { width: 22px; height: 22px; }
 
 .contact-list { flex: 1; overflow-y: auto; padding: 8px 0; scrollbar-width: thin; scrollbar-color: var(--bg3) transparent; }
 .contact-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: background .12s; position: relative; }
@@ -302,6 +323,82 @@ body {
   font-size: 13px; box-shadow: var(--shadow); z-index: 200;
 }
 .toast[hidden] { display: none; }
+
+/* ── avatars (image or initials, used everywhere) ── */
+.avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+
+/* ── group member strip under the chat header ── */
+.group-members-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 20px; background: var(--bg1); border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.group-avatars { display: flex; }
+.group-avatars .mini-av {
+  width: 26px; height: 26px; border-radius: 50%; margin-left: -8px;
+  border: 2px solid var(--bg1); display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff; overflow: hidden; position: relative;
+}
+.group-avatars .mini-av:first-child { margin-left: 0; }
+.group-members-text { font-size: 12px; color: var(--fg3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── attach button ── */
+.attach-btn { flex-shrink: 0; }
+
+/* ── image messages ── */
+.msg-img { max-width: 260px; max-height: 320px; border-radius: 12px; display: block; cursor: zoom-in; object-fit: cover; }
+
+/* ── typing bubble with a name label ── */
+.typing-name { font-size: 11px; color: var(--fg3); margin-bottom: 3px; padding: 0 4px; align-self: flex-start; }
+
+/* ── modals ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 150;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  padding: 16px;
+}
+.modal-overlay[hidden] { display: none !important; }
+.modal-card {
+  width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto;
+  background: var(--bg1); border-radius: 18px; padding: 22px;
+  box-shadow: var(--shadow);
+}
+.modal-card.narrow { max-width: 320px; text-align: center; }
+.modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.modal-head h3 { font-size: 17px; font-weight: 700; }
+.modal-tabs { display: flex; background: var(--bg2); border-radius: 10px; padding: 4px; gap: 4px; margin-bottom: 16px; }
+.modal-tab {
+  flex: 1; border: none; background: none; color: var(--fg3);
+  font-weight: 600; font-size: 13px; padding: 9px 0; border-radius: 8px; cursor: pointer;
+}
+.modal-tab.active { background: var(--accent); color: #fff; }
+.modal-hint { font-size: 12px; color: var(--fg3); margin-bottom: 10px; }
+.modal-error { color: var(--red); font-size: 12px; min-height: 16px; margin: 8px 0; }
+
+.people-list { display: flex; flex-direction: column; gap: 2px; max-height: 280px; overflow-y: auto; }
+.people-row {
+  display: flex; align-items: center; gap: 12px; padding: 9px 8px;
+  border-radius: 10px; cursor: pointer; transition: background .12s;
+}
+.people-row:hover { background: var(--bg2); }
+.people-row .contact-av { width: 36px; height: 36px; font-size: 13px; }
+.people-row span.pname { flex: 1; font-size: 14px; font-weight: 600; }
+.people-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
+
+#nc-group-name {
+  width: 100%; background: var(--bg2); border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 14px;
+  color: var(--fg); font-family: inherit; font-size: 14px; outline: none;
+}
+#nc-group-name:focus { border-color: var(--accent); }
+.modal-card label { font-size: 12px; color: var(--fg2); font-weight: 600; display: block; margin-bottom: 6px; }
+
+.avatar-modal-preview {
+  width: 120px; height: 120px; border-radius: 50%; margin: 4px auto 18px;
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
+  font-size: 40px; font-weight: 700; color: #fff; background: var(--accent);
+}
+#avatar-remove-btn { color: var(--red); margin-top: 8px; }
 
 @media (max-width: 700px) {
   .app { grid-template-columns: 1fr; }
