@@ -11,10 +11,11 @@ const { verifyToken } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const messageRoutes = require('./routes/messages');
+const groupRoutes = require('./routes/groups');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // Lightweight uptime check — no DB hit, so it stays fast and never
 // false-fails if Postgres is briefly slow. Point UptimeRobot (or any
@@ -24,6 +25,7 @@ app.get('/healthz', (req, res) => res.status(200).json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/groups', groupRoutes);
 
 // extensions: ['html'] lets /login, /signup, /chat resolve to their .html
 // files directly, so the browser's address bar never shows the extension.
@@ -52,6 +54,14 @@ function broadcastPresence() {
   io.emit('presence:list', [...online.keys()]);
 }
 
+// Lets routes/groups.js (which has no access to `io`) tell every new
+// member's sockets live that they were just added to a group.
+app.set('notifyGroupCreated', (group, memberIds) => {
+  memberIds.forEach((id) => {
+    socketsFor(id).forEach((sid) => io.to(sid).emit('group:new', group));
+  });
+});
+
 io.use((socket, next) => {
   try {
     const token = socket.handshake.auth && socket.handshake.auth.token;
@@ -68,10 +78,35 @@ io.on('connection', (socket) => {
   addSocket(userId, socket.id);
   broadcastPresence();
 
-  socket.on('message:send', async ({ to, body }) => {
-    if (!Number.isInteger(to) || typeof body !== 'string' || !body.trim()) return;
-    const text = body.slice(0, 4000);
+  socket.on('message:send', async ({ to, groupId, body }) => {
+    if (typeof body !== 'string' || !body.trim()) return;
 
+    const isImage = body.startsWith('[[img]]');
+    if (isImage) {
+      if (body.length > 950 * 1024) return; // over the cap the client already enforces, ignore
+    }
+    const text = isImage ? body : body.slice(0, 4000);
+
+    if (Number.isInteger(groupId)) {
+      const memberCheck = await pool.query(
+        'SELECT user_id FROM group_members WHERE group_id = $1',
+        [groupId]
+      );
+      const memberIds = memberCheck.rows.map((r) => r.user_id);
+      if (!memberIds.includes(userId)) return; // not a member, ignore silently
+
+      const result = await pool.query(
+        `INSERT INTO messages (sender_id, group_id, body)
+         VALUES ($1, $2, $3)
+         RETURNING id, sender_id, group_id, body, created_at`,
+        [userId, groupId, text]
+      );
+      const message = result.rows[0];
+      memberIds.forEach((id) => socketsFor(id).forEach((sid) => io.to(sid).emit('message:new', message)));
+      return;
+    }
+
+    if (!Number.isInteger(to)) return;
     const result = await pool.query(
       `INSERT INTO messages (sender_id, receiver_id, body)
        VALUES ($1, $2, $3)
@@ -84,7 +119,15 @@ io.on('connection', (socket) => {
     socketsFor(userId).forEach((sid) => io.to(sid).emit('message:new', message));
   });
 
-  socket.on('typing', ({ to }) => {
+  socket.on('typing', async ({ to, groupId }) => {
+    if (Number.isInteger(groupId)) {
+      const memberCheck = await pool.query('SELECT user_id FROM group_members WHERE group_id = $1', [groupId]);
+      memberCheck.rows
+        .map((r) => r.user_id)
+        .filter((id) => id !== userId)
+        .forEach((id) => socketsFor(id).forEach((sid) => io.to(sid).emit('typing', { from: userId, groupId })));
+      return;
+    }
     if (!Number.isInteger(to)) return;
     socketsFor(to).forEach((sid) => io.to(sid).emit('typing', { from: userId }));
   });
