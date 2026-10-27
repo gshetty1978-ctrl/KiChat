@@ -17,18 +17,24 @@
 <div class="app" id="app">
   <nav class="nav-rail">
     <div class="nav-logo">K1</div>
-    <div class="nav-btn active" title="Chats">
+    <div class="nav-btn active" data-i18n-title="nav.chats" title="Chats">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
     </div>
     <div class="nav-spacer"></div>
-    <div class="nav-btn js-install-btn" onclick="installApp()" title="Install K1Chat" hidden>
+    <div class="nav-btn js-install-btn" onclick="installApp()" data-i18n-title="install.button" title="Install K1Chat" hidden>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
     </div>
-    <div class="nav-btn" onclick="toggleTheme()" title="Toggle theme">
+    <div class="nav-btn" onclick="openLanguageModal()" data-i18n-title="nav.language" title="Language">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+    </div>
+    <div class="nav-btn" onclick="toggleTheme()" data-i18n-title="nav.toggle_theme" title="Toggle theme">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
         <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
@@ -36,32 +42,32 @@
         <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
       </svg>
     </div>
-    <div class="nav-btn" onclick="logout()" title="Log out">
+    <div class="nav-btn" onclick="logout()" data-i18n-title="nav.logout" title="Log out">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
       </svg>
     </div>
-    <button class="nav-avatar" id="my-avatar" title="Edit profile picture" onclick="openAvatarModal()"></button>
+    <button class="nav-avatar" id="my-avatar" data-i18n-title="nav.edit_avatar" title="Edit profile picture" onclick="openAvatarModal()"></button>
   </nav>
 
   <aside class="sidebar">
     <div class="sidebar-head">
-      <div class="sidebar-title">Messages</div>
+      <div class="sidebar-title" data-i18n="sidebar.title">Messages</div>
       <div class="search-bar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" placeholder="Search…" id="search-input" oninput="renderContactList()">
+        <input type="text" data-i18n-placeholder="sidebar.search" placeholder="Search…" id="search-input" oninput="renderContactList()">
       </div>
     </div>
     <div class="tabs">
-      <button class="tab-btn active" data-tab="all" onclick="setSidebarTab('all', this)">All</button>
-      <button class="tab-btn" data-tab="unread" onclick="setSidebarTab('unread', this)">Unread</button>
-      <button class="tab-btn" data-tab="groups" onclick="setSidebarTab('groups', this)">Groups</button>
+      <button class="tab-btn active" data-tab="all" data-i18n="sidebar.tab.all" onclick="setSidebarTab('all', this)">All</button>
+      <button class="tab-btn" data-tab="unread" data-i18n="sidebar.tab.unread" onclick="setSidebarTab('unread', this)">Unread</button>
+      <button class="tab-btn" data-tab="groups" data-i18n="sidebar.tab.groups" onclick="setSidebarTab('groups', this)">Groups</button>
     </div>
     <div class="contact-list" id="contact-list"></div>
-    <div class="signature-footer sidebar-signature">A Kiaan Ganesh Shetty Creation · <span class="js-last-modified"></span></div>
-    <button class="fab-new" onclick="openNewChatModal()" title="New chat or group">
+    <div class="signature-footer sidebar-signature"><span data-i18n="footer.signature">A Kiaan Ganesh Shetty Creation ·</span> <span class="js-last-modified"></span></div>
+    <button class="fab-new" onclick="openNewChatModal()" data-i18n-title="sidebar.new_chat" title="New chat or group">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
       </svg>
@@ -75,13 +81,13 @@
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
       </div>
-      <h2>K1Chat</h2>
-      <p>Pick someone from the list to start chatting.</p>
+      <h2 data-i18n="chat.empty.title">K1Chat</h2>
+      <p data-i18n="chat.empty.sub">Pick someone from the list to start chatting.</p>
     </div>
 
     <div id="chat-view" hidden>
       <div class="chat-header">
-        <button class="icon-btn back-btn" onclick="backToSidebar()" title="Back to chats">
+        <button class="icon-btn back-btn" onclick="backToSidebar()" data-i18n-title="chat.back" title="Back to chats">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         </button>
         <div class="chat-header-av" id="header-av"></div>
@@ -91,18 +97,18 @@
         </div>
         <div class="chat-actions">
           <div id="dm-actions">
-            <button class="icon-btn" onclick="startCall('audio')" title="Voice call">
+            <button class="icon-btn" onclick="startCall('audio')" data-i18n-title="chat.voice_call" title="Voice call">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
             </button>
-            <button class="icon-btn" onclick="startCall('video')" title="Video call">
+            <button class="icon-btn" onclick="startCall('video')" data-i18n-title="chat.video_call" title="Video call">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
               </svg>
             </button>
           </div>
-          <button class="icon-btn" id="group-settings-btn" onclick="openGroupSettings()" title="Group settings" hidden>
+          <button class="icon-btn" id="group-settings-btn" onclick="openGroupSettings()" data-i18n-title="chat.group_settings" title="Group settings" hidden>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"/>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -115,16 +121,16 @@
       <div class="messages" id="messages"></div>
 
       <div class="input-bar">
-        <button class="icon-btn attach-btn" onclick="document.getElementById('file-input').click()" title="Attach an image">
+        <button class="icon-btn attach-btn" onclick="document.getElementById('file-input').click()" data-i18n-title="chat.attach" title="Attach an image">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
           </svg>
         </button>
         <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" hidden onchange="handleFileSelected(event)">
         <div class="input-wrap">
-          <textarea class="msg-input" id="msg-input" rows="1" placeholder="Type a message…"></textarea>
+          <textarea class="msg-input" id="msg-input" rows="1" data-i18n-placeholder="chat.input.placeholder" placeholder="Type a message…"></textarea>
         </div>
-        <button class="send-btn" onclick="sendMessage()" title="Send">
+        <button class="send-btn" onclick="sendMessage()" data-i18n-title="chat.send" title="Send">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
           </svg>
@@ -140,13 +146,13 @@
     <div class="call-name" id="incoming-name"></div>
     <div class="call-status" id="incoming-kind">Incoming call…</div>
     <div class="call-actions">
-      <button class="call-btn end" onclick="rejectCall()" title="Decline">
+      <button class="call-btn end" onclick="rejectCall()" data-i18n-title="call.decline" title="Decline">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="23" y1="1" x2="1" y2="23"/>
           <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.45-3.45m-2.49-2.5a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.71"/>
         </svg>
       </button>
-      <button class="call-btn accept" onclick="acceptCall()" title="Accept">
+      <button class="call-btn accept" onclick="acceptCall()" data-i18n-title="call.accept" title="Accept">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
         </svg>
@@ -162,14 +168,14 @@
     <div class="call-status" id="voice-status">Calling…</div>
     <div class="call-timer" id="voice-timer" hidden>0:00</div>
     <div class="call-actions">
-      <button class="call-btn mute" id="mute-btn" onclick="toggleMute()" title="Mute">
+      <button class="call-btn mute" id="mute-btn" onclick="toggleMute()" data-i18n-title="call.mute" title="Mute">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
           <path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/>
           <line x1="8" y1="23" x2="16" y2="23"/>
         </svg>
       </button>
-      <button class="call-btn end" onclick="endCall()" title="End call">
+      <button class="call-btn end" onclick="endCall()" data-i18n-title="call.end" title="End call">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.45-3.45m-2.49-2.5a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.71"/>
           <line x1="23" y1="1" x2="1" y2="23"/>
@@ -192,18 +198,18 @@
     <span class="timer-badge" id="video-timer" hidden>0:00</span>
     <video id="local-video" class="video-self" autoplay playsinline muted></video>
     <div class="video-bar">
-      <button class="call-btn mute" id="vmute-btn" onclick="toggleMute()" title="Mute">
+      <button class="call-btn mute" id="vmute-btn" onclick="toggleMute()" data-i18n-title="call.mute" title="Mute">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
           <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
           <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
         </svg>
       </button>
-      <button class="call-btn video-toggle" id="vcam-btn" onclick="toggleCam()" title="Camera">
+      <button class="call-btn video-toggle" id="vcam-btn" onclick="toggleCam()" data-i18n-title="call.camera" title="Camera">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
           <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
         </svg>
       </button>
-      <button class="call-btn end" onclick="endCall()" title="End call">
+      <button class="call-btn end" onclick="endCall()" data-i18n-title="call.end" title="End call">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
           <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.45-3.45m-2.49-2.5a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.71"/>
           <line x1="23" y1="1" x2="1" y2="23"/>
@@ -219,28 +225,28 @@
 <div class="modal-overlay" id="new-chat-modal" hidden>
   <div class="modal-card">
     <div class="modal-head">
-      <h3>New chat</h3>
-      <button class="icon-btn" onclick="closeNewChatModal()" title="Close">
+      <h3 data-i18n="modal.new_chat.title">New chat</h3>
+      <button class="icon-btn" onclick="closeNewChatModal()" data-i18n-title="close" title="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="modal-tabs">
-      <button class="modal-tab active" data-mode="dm" onclick="setNewChatMode('dm', this)">Direct message</button>
-      <button class="modal-tab" data-mode="group" onclick="setNewChatMode('group', this)">Group</button>
+      <button class="modal-tab active" data-mode="dm" data-i18n="modal.new_chat.dm_tab" onclick="setNewChatMode('dm', this)">Direct message</button>
+      <button class="modal-tab" data-mode="group" data-i18n="modal.new_chat.group_tab" onclick="setNewChatMode('group', this)">Group</button>
     </div>
 
     <div id="nc-dm-panel">
-      <p class="modal-hint">Pick someone to start chatting with.</p>
+      <p class="modal-hint" data-i18n="modal.new_chat.dm_hint">Pick someone to start chatting with.</p>
       <div class="people-list" id="nc-dm-list"></div>
     </div>
 
     <div id="nc-group-panel" hidden>
-      <label>Group name</label>
-      <input type="text" id="nc-group-name" placeholder="e.g. Weekend Trip" maxlength="60">
-      <p class="modal-hint">Pick at least one other person.</p>
+      <label data-i18n="modal.new_chat.group_name">Group name</label>
+      <input type="text" id="nc-group-name" data-i18n-placeholder="modal.new_chat.group_name_placeholder" placeholder="e.g. Weekend Trip" maxlength="60">
+      <p class="modal-hint" data-i18n="modal.new_chat.group_hint">Pick at least one other person.</p>
       <div class="people-list checkable" id="nc-group-members"></div>
       <div class="modal-error" id="nc-group-error"></div>
-      <button class="auth-submit" onclick="submitNewGroup()">Create group</button>
+      <button class="auth-submit" data-i18n="modal.new_chat.create_group" onclick="submitNewGroup()">Create group</button>
     </div>
   </div>
 </div>
@@ -249,16 +255,16 @@
 <div class="modal-overlay" id="avatar-modal" hidden>
   <div class="modal-card narrow">
     <div class="modal-head">
-      <h3>Profile picture</h3>
-      <button class="icon-btn" onclick="closeAvatarModal()" title="Close">
+      <h3 data-i18n="modal.avatar.title">Profile picture</h3>
+      <button class="icon-btn" onclick="closeAvatarModal()" data-i18n-title="close" title="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="avatar-modal-preview" id="avatar-preview"></div>
     <div class="modal-error" id="avatar-error"></div>
     <input type="file" id="avatar-file-input" accept="image/png,image/jpeg,image/webp" hidden onchange="handleAvatarSelected(event)">
-    <button class="auth-submit" onclick="document.getElementById('avatar-file-input').click()">Choose photo</button>
-    <button class="install-link" id="avatar-remove-btn" onclick="removeAvatar()" hidden>Remove photo</button>
+    <button class="auth-submit" data-i18n="modal.avatar.choose" onclick="document.getElementById('avatar-file-input').click()">Choose photo</button>
+    <button class="install-link" id="avatar-remove-btn" data-i18n="modal.avatar.remove" onclick="removeAvatar()" hidden>Remove photo</button>
   </div>
 </div>
 
@@ -266,16 +272,16 @@
 <div class="modal-overlay" id="group-settings-modal" hidden>
   <div class="modal-card">
     <div class="modal-head">
-      <h3>Group settings</h3>
-      <button class="icon-btn" onclick="closeGroupSettings()" title="Close">
+      <h3 data-i18n="modal.group_settings.title">Group settings</h3>
+      <button class="icon-btn" onclick="closeGroupSettings()" data-i18n-title="close" title="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
 
     <div class="settings-row">
       <div>
-        <div class="settings-row-title">Only admins can send messages</div>
-        <div class="settings-row-sub">Everyone can still read and react, just not post.</div>
+        <div class="settings-row-title" data-i18n="modal.group_settings.restricted_title">Only admins can send messages</div>
+        <div class="settings-row-sub" data-i18n="modal.group_settings.restricted_sub">Everyone can still read and react, just not post.</div>
       </div>
       <button class="toggle-switch" id="restricted-toggle" onclick="toggleRestricted()" role="switch" aria-checked="false">
         <span class="toggle-knob"></span>
@@ -283,8 +289,27 @@
     </div>
     <div class="modal-error" id="settings-error"></div>
 
-    <label style="margin-top:18px">Members</label>
+    <label style="margin-top:18px" data-i18n="modal.group_settings.members">Members</label>
     <div class="people-list" id="settings-members-list"></div>
+  </div>
+</div>
+
+<!-- language picker -->
+<div class="modal-overlay" id="language-modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 data-i18n="nav.language">Language</h3>
+      <button class="icon-btn" onclick="closeLanguageModal()" title="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="search-bar" style="margin-bottom:12px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="language-search" placeholder="Search…" oninput="renderLanguageList()">
+    </div>
+    <div class="people-list" id="language-list" style="max-height:360px"></div>
   </div>
 </div>
 

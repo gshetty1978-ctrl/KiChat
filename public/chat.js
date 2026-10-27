@@ -33,6 +33,7 @@ let camOff = false;
 
 (async function boot() {
   if (!requireTokenOrRedirect()) return;
+  await languageReady;
   try {
     me = await fetchJSON('/api/users/me');
   } catch (e) {
@@ -133,7 +134,7 @@ function connectSocket() {
     groups.unshift(full);
     groupsById.set(full.id, full);
     renderContactList();
-    showToast(`Added to "${full.name}"`);
+    showToast(t('toast.added_to_group', { name: full.name }));
   });
 
   socket.on('group:updated', async (group) => {
@@ -164,7 +165,7 @@ function connectSocket() {
     const user = usersById.get(from);
     setAvatarEl(document.getElementById('incoming-avatar'), user);
     document.getElementById('incoming-name').textContent = user ? user.username : 'Unknown';
-    document.getElementById('incoming-kind').textContent = kind === 'video' ? 'Incoming video call…' : 'Incoming voice call…';
+    document.getElementById('incoming-kind').textContent = kind === 'video' ? t('call.incoming_video') : t('call.incoming_voice');
     document.getElementById('incoming-overlay').hidden = false;
   });
 
@@ -185,11 +186,11 @@ function connectSocket() {
   });
 
   socket.on('call:reject', () => {
-    endCallWithStatus('Call declined');
+    endCallWithStatus(t('call.declined'));
   });
 
   socket.on('call:end', () => {
-    endCallWithStatus('Call ended');
+    endCallWithStatus(t('call.ended'));
   });
 }
 
@@ -262,10 +263,10 @@ function renderContactList() {
 
   if (list.length === 0) {
     const msg = sidebarTab === 'groups'
-      ? 'No groups yet. Tap + to start one.'
+      ? t('sidebar.empty.groups')
       : sidebarTab === 'unread'
-        ? "You're all caught up! 🎉"
-        : 'No one else has signed up yet. Share the app link so others can join.';
+        ? t('sidebar.empty.unread')
+        : t('sidebar.empty.all');
     el.innerHTML = `<div style="padding:24px 16px;color:var(--fg3);font-size:13px;text-align:center">${msg}</div>`;
     return;
   }
@@ -279,7 +280,7 @@ function renderContactList() {
       ? cachedPreview.text
       : item.last
         ? '…'
-        : (item.type === 'group' ? 'No messages yet' : 'Say hi 👋');
+        : (item.type === 'group' ? t('sidebar.no_messages_yet') : t('sidebar.say_hi'));
     const time = item.last ? timeLabel(item.last.created_at) : '';
     const dot = item.type === 'dm' ? `<span class="dot ${item.online ? 'online' : 'offline'}"></span>` : '';
     const onclick = item.type === 'dm' ? `openChat(${item.id})` : `openGroup(${item.id})`;
@@ -336,7 +337,7 @@ async function openChat(id) {
 
 function updateHeaderStatus() {
   if (!activeUser) return;
-  document.getElementById('header-status').textContent = online.has(activeUser.id) ? '● Online' : '○ Offline';
+  document.getElementById('header-status').textContent = online.has(activeUser.id) ? ('● ' + t('chat.online')) : ('○ ' + t('chat.offline'));
 }
 
 // Mobile only: the chat view sits on top of the sidebar there, so this
@@ -398,7 +399,7 @@ async function quietGroupKey(group) {
 // worth telling them if it fails.
 async function ensureGroupKey(group) {
   const key = await quietGroupKey(group);
-  if (!key) showToast('Could not load encryption key for this group.');
+  if (!key) showToast(t('toast.group_key_load_error'));
   return key;
 }
 
@@ -411,7 +412,7 @@ function updateGroupHeaderStatus() {
   const onlineOthers = others.filter((m) => online.has(m.id));
 
   if (onlineOthers.length > 0) {
-    statusEl.textContent = `${onlineOthers.length} online`;
+    statusEl.textContent = t('chat.online_count', { n: onlineOthers.length });
   } else {
     const names = others.map((m) => m.username);
     const maxShown = 5;
@@ -456,8 +457,8 @@ function renderGroupSettingsModal() {
   list.innerHTML = activeGroup.members.map((m) => `
     <div class="people-row" style="cursor:default">
       <div class="contact-av" style="${avatarStyle(m, m.id)}">${avatarInnerHtml(m, m.username)}</div>
-      <span class="pname">${escapeHtml(m.username)}${m.is_admin ? '<span class="member-admin-badge">ADMIN</span>' : ''}</span>
-      ${amAdmin && !m.is_admin ? `<button class="member-make-admin" onclick="promoteAdmin(${m.id})">Make admin</button>` : ''}
+      <span class="pname">${escapeHtml(m.username)}${m.is_admin ? `<span class="member-admin-badge">${t('modal.group_settings.admin_badge')}</span>` : ''}</span>
+      ${amAdmin && !m.is_admin ? `<button class="member-make-admin" onclick="promoteAdmin(${m.id})">${t('modal.group_settings.make_admin')}</button>` : ''}
     </div>
   `).join('');
 }
@@ -537,7 +538,7 @@ async function cachePreview(msg, kind) {
   if (previewCache.has(msg.id)) return;
   const groupRef = kind === 'group' ? groupsById.get(msg.group_id) : undefined;
   const decrypted = await decryptMessage(msg, kind, groupRef);
-  previewCache.set(msg.id, { text: decrypted.isImage ? '📷 Photo' : decrypted.body, isImage: decrypted.isImage });
+  previewCache.set(msg.id, { text: decrypted.isImage ? t('chat.photo') : decrypted.body, isImage: decrypted.isImage });
   renderContactList();
 }
 
@@ -627,14 +628,14 @@ function clearTypingFor() {
 async function encryptForActiveChat(plaintext) {
   if (activeGroup) {
     if (!activeGroup._key) {
-      showToast('Still setting up encryption for this group — try again in a moment.');
+      showToast(t('toast.group_key_wait'));
       return null;
     }
     return encryptForGroup(activeGroup._key, plaintext);
   }
   if (activeUser) {
     if (!activeUser.public_key) {
-      showToast(`${activeUser.username} hasn't set up encryption yet (they need to open K1Chat once).`);
+      showToast(t('toast.no_encryption_yet', { name: activeUser.username }));
       return null;
     }
     return encryptForPeer(activeUser.public_key, plaintext);
@@ -700,7 +701,7 @@ async function handleFileSelected(event) {
   if (!activeUser && !activeGroup) return;
 
   if (file.size > MAX_IMAGE_RAW_BYTES) {
-    showToast(`That file is too big (max ${Math.round(MAX_IMAGE_RAW_BYTES / 1024 / 1024)}MB).`);
+    showToast(t('toast.file_too_big', { size: Math.round(MAX_IMAGE_RAW_BYTES / 1024 / 1024) + 'MB' }));
     return;
   }
 
@@ -708,7 +709,7 @@ async function handleFileSelected(event) {
   try {
     dataUrl = await compressImageToDataUrl(file, 1280, 0.82);
   } catch (e) {
-    showToast('Could not read that image.');
+    showToast(t('toast.could_not_read_image'));
     return;
   }
 
@@ -716,7 +717,7 @@ async function handleFileSelected(event) {
     dataUrl = await compressImageToDataUrl(file, 900, 0.68);
   }
   if (dataUrl.length > MAX_IMAGE_SENT_BYTES) {
-    showToast('Image is still too large after compression — try a smaller photo.');
+    showToast(t('toast.image_too_large'));
     return;
   }
 
@@ -747,7 +748,7 @@ async function handleAvatarSelected(event) {
   errEl.textContent = '';
 
   if (file.size > MAX_AVATAR_RAW_BYTES) {
-    errEl.textContent = `That file is too big (max ${Math.round(MAX_AVATAR_RAW_BYTES / 1024 / 1024)}MB).`;
+    errEl.textContent = t('toast.file_too_big', { size: Math.round(MAX_AVATAR_RAW_BYTES / 1024 / 1024) + 'MB' });
     return;
   }
 
@@ -755,7 +756,7 @@ async function handleAvatarSelected(event) {
   try {
     dataUrl = await compressImageToDataUrl(file, 320, 0.85);
   } catch (e) {
-    errEl.textContent = 'Could not read that image.';
+    errEl.textContent = t('toast.could_not_read_image');
     return;
   }
   if (dataUrl.length > 340 * 1024) {
@@ -809,7 +810,7 @@ function setNewChatMode(mode, btn) {
 function renderNewChatLists() {
   const dmList = document.getElementById('nc-dm-list');
   if (users.length === 0) {
-    dmList.innerHTML = `<div style="padding:16px 8px;color:var(--fg3);font-size:13px">No one else has signed up yet.</div>`;
+    dmList.innerHTML = `<div style="padding:16px 8px;color:var(--fg3);font-size:13px">${t('modal.new_chat.no_users')}</div>`;
   } else {
     dmList.innerHTML = users.map((u) => `
       <div class="people-row" onclick="closeNewChatModal(); openChat(${u.id})">
@@ -840,7 +841,7 @@ async function submitNewGroup() {
 
   const missingKey = memberIds.find((id) => !usersById.get(id) || !usersById.get(id).public_key);
   if (missingKey) {
-    errEl.textContent = `${usersById.get(missingKey).username} hasn't set up encryption yet (they need to open K1Chat once).`;
+    errEl.textContent = t('toast.no_encryption_yet', { name: usersById.get(missingKey).username });
     return;
   }
 
@@ -897,14 +898,14 @@ async function startCall(kind) {
   try {
     localStream = await getMedia(kind);
   } catch (err) {
-    showToast('Could not access ' + (kind === 'video' ? 'camera/microphone' : 'microphone'));
+    showToast(t('toast.mic_cam_error', { device: kind === 'video' ? t('toast.camera_microphone') : t('toast.microphone') }));
     return;
   }
 
   pc = newPeerConnection(callOtherId);
   localStream.getTracks().forEach((t) => pc.addTrack(t, localStream));
 
-  showCallOverlay(kind, activeUser, 'Calling…');
+  showCallOverlay(kind, activeUser, t('call.calling'));
 
   const offer = await pc.createOffer();
   await pc.setLocalDescription(offer);
@@ -921,7 +922,7 @@ async function acceptCall() {
   try {
     localStream = await getMedia(kind);
   } catch (err) {
-    showToast('Could not access ' + (kind === 'video' ? 'camera/microphone' : 'microphone'));
+    showToast(t('toast.mic_cam_error', { device: kind === 'video' ? t('toast.camera_microphone') : t('toast.microphone') }));
     socket.emit('call:reject', { to: from });
     pendingOffer = null;
     return;
@@ -938,7 +939,7 @@ async function acceptCall() {
   socket.emit('call:answer', { to: from, sdp: answer });
 
   const user = usersById.get(from);
-  showCallOverlay(kind, user, 'Connecting…');
+  showCallOverlay(kind, user, t('call.connecting'));
   setCallConnected();
   pendingOffer = null;
 }
@@ -974,7 +975,7 @@ function showCallOverlay(kind, user, status) {
 function setCallConnected() {
   const statusEl = document.getElementById(callKind === 'video' ? 'video-status' : 'voice-status');
   const timerEl = document.getElementById(callKind === 'video' ? 'video-timer' : 'voice-timer');
-  statusEl.textContent = 'Connected';
+  statusEl.textContent = t('call.connected');
   timerEl.hidden = false;
   callSecs = 0;
   updateTimerText(timerEl);
@@ -990,7 +991,7 @@ function updateTimerText(el) {
 
 function endCall() {
   if (callOtherId) socket.emit('call:end', { to: callOtherId });
-  endCallWithStatus('Call ended');
+  endCallWithStatus(t('call.ended'));
 }
 
 // Shows a plain "Call ended" / "Call declined" status in place of the
