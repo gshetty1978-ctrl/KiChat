@@ -40,6 +40,15 @@ let camOff = false;
     location.href = '/login';
     return;
   }
+
+  // Make sure this device has an E2E identity, and the server has its
+  // current public half (first run on a device, or a key it hasn't seen).
+  const myPublicKey = await getMyPublicKeyB64();
+  if (me.public_key !== myPublicKey) {
+    await putJSON('/api/users/me/public-key', { publicKey: myPublicKey });
+    me.public_key = myPublicKey;
+  }
+
   await initApp();
 })();
 
@@ -75,6 +84,7 @@ function connectSocket() {
   socket.on('message:new', (msg) => {
     if (msg.group_id) {
       groupLastMsg.set(msg.group_id, msg);
+      cachePreview(msg, 'group');
       if (activeGroup && activeGroup.id === msg.group_id) {
         appendMessage(msg);
         clearTypingFor(msg.group_id, true);
@@ -87,6 +97,7 @@ function connectSocket() {
 
     const otherId = msg.sender_id === me.id ? msg.receiver_id : msg.sender_id;
     lastMsg.set(otherId, msg);
+    cachePreview(msg, 'dm');
 
     if (activeUser && activeUser.id === otherId) {
       appendMessage(msg);
@@ -114,12 +125,33 @@ function connectSocket() {
     showTypingBubble(name);
   });
 
-  socket.on('group:new', (group) => {
+  socket.on('group:new', async (group) => {
     if (groupsById.has(group.id)) return; // the creator already has it from the POST response
-    groups.unshift(group);
-    groupsById.set(group.id, group);
+    // Refetch with our own user's scope — the broadcast above has no
+    // myKey on it (stripped server-side), only GET gives us our copy.
+    const full = await fetchJSON(`/api/groups/${group.id}`);
+    groups.unshift(full);
+    groupsById.set(full.id, full);
     renderContactList();
-    showToast(`Added to "${group.name}"`);
+    showToast(`Added to "${full.name}"`);
+  });
+
+  socket.on('group:updated', async (group) => {
+    const existing = groupsById.get(group.id);
+    const full = await fetchJSON(`/api/groups/${group.id}`);
+    if (existing && existing._key) full._key = existing._key; // already unwrapped, keep it
+    groupsById.set(full.id, full);
+    groups = groups.map((g) => (g.id === full.id ? full : g));
+    if (activeGroup && activeGroup.id === full.id) {
+      activeGroup = full;
+      updateGroupHeaderStatus();
+      if (!document.getElementById('group-settings-modal').hidden) renderGroupSettingsModal();
+    }
+    renderContactList();
+  });
+
+  socket.on('message:error', ({ error }) => {
+    showToast(error);
   });
 
   // ── call signaling ──
@@ -242,9 +274,12 @@ function renderContactList() {
     const isActive = item.type === 'dm'
       ? (activeUser && activeUser.id === item.id)
       : (activeGroup && activeGroup.id === item.id);
-    const preview = item.last
-      ? (item.last.body.startsWith('[[img]]') ? '📷 Photo' : item.last.body)
-      : (item.type === 'group' ? 'No messages yet' : 'Say hi 👋');
+    const cachedPreview = item.last ? previewCache.get(item.last.id) : null;
+    const preview = cachedPreview
+      ? cachedPreview.text
+      : item.last
+        ? '…'
+        : (item.type === 'group' ? 'No messages yet' : 'Say hi 👋');
     const time = item.last ? timeLabel(item.last.created_at) : '';
     const dot = item.type === 'dm' ? `<span class="dot ${item.online ? 'online' : 'offline'}"></span>` : '';
     const onclick = item.type === 'dm' ? `openChat(${item.id})` : `openGroup(${item.id})`;
@@ -279,14 +314,18 @@ async function openChat(id) {
   setAvatarEl(document.getElementById('header-av'), activeUser);
   document.getElementById('header-name').textContent = activeUser.username;
   updateHeaderStatus();
-  document.getElementById('chat-actions').hidden = false;
+  document.getElementById('dm-actions').hidden = false;
+  document.getElementById('group-settings-btn').hidden = true;
   document.getElementById('group-members-row').hidden = true;
 
   document.getElementById('empty-state').hidden = true;
   document.getElementById('chat-view').hidden = false;
 
   const history = await fetchJSON('/api/messages/' + id);
-  if (history.length) lastMsg.set(id, history[history.length - 1]);
+  if (history.length) {
+    lastMsg.set(id, history[history.length - 1]);
+    cachePreview(history[history.length - 1], 'dm');
+  }
   renderMessages(history, 'dm');
   renderContactList();
   document.getElementById('msg-input').focus();
@@ -309,17 +348,50 @@ async function openGroup(id) {
   setAvatarEl(document.getElementById('header-av'), null, activeGroup.name);
   document.getElementById('header-av').style.background = colorFor(id);
   document.getElementById('header-name').textContent = activeGroup.name;
-  document.getElementById('chat-actions').hidden = true; // group calls aren't supported
+  document.getElementById('dm-actions').hidden = true; // group calls aren't supported
+  document.getElementById('group-settings-btn').hidden = false;
   updateGroupHeaderStatus();
 
   document.getElementById('empty-state').hidden = true;
   document.getElementById('chat-view').hidden = false;
 
+  await ensureGroupKey(activeGroup);
+
   const history = await fetchJSON(`/api/groups/${id}/messages`);
-  if (history.length) groupLastMsg.set(id, history[history.length - 1]);
+  if (history.length) {
+    groupLastMsg.set(id, history[history.length - 1]);
+    cachePreview(history[history.length - 1], 'group');
+  }
   renderMessages(history, 'group');
   renderContactList();
   document.getElementById('msg-input').focus();
+}
+
+// Unwraps (decrypts) this browser's copy of a group's symmetric key using
+// the creator's public key, and caches the result on the group object so
+// it's only done once per group per page load. Silent — returns null on
+// failure instead of telling the user, since this also runs in the
+// background for sidebar previews of groups that aren't open right now.
+async function quietGroupKey(group) {
+  if (!group) return null;
+  if (group._key) return group._key;
+  if (!group.myKey) return null;
+  const creator = group.members.find((m) => m.id === group.created_by);
+  if (!creator || !creator.public_key) return null;
+  try {
+    group._key = await unwrapGroupKey(group.myKey.wrapped_key, group.myKey.iv, creator.public_key);
+    return group._key;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Same thing, but for when the user is actively opening this group —
+// worth telling them if it fails.
+async function ensureGroupKey(group) {
+  const key = await quietGroupKey(group);
+  if (!key) showToast('Could not load encryption key for this group.');
+  return key;
 }
 
 // Shows "N online" when someone besides you is online; otherwise lists
@@ -350,18 +422,129 @@ function updateGroupHeaderStatus() {
     <span class="group-members-text">${escapeHtml(activeGroup.members.map((m) => m.username).join(', '))}</span>`;
 }
 
+// ── group settings (restricted toggle, admins) ──────────────────────────
+function openGroupSettings() {
+  if (!activeGroup) return;
+  renderGroupSettingsModal();
+  document.getElementById('settings-error').textContent = '';
+  document.getElementById('group-settings-modal').hidden = false;
+}
+function closeGroupSettings() {
+  document.getElementById('group-settings-modal').hidden = true;
+}
+
+function renderGroupSettingsModal() {
+  if (!activeGroup) return;
+  const myEntry = activeGroup.members.find((m) => m.id === me.id);
+  const amAdmin = !!(myEntry && myEntry.is_admin);
+
+  const toggle = document.getElementById('restricted-toggle');
+  toggle.setAttribute('aria-checked', String(!!activeGroup.restricted));
+  toggle.disabled = !amAdmin;
+  toggle.style.opacity = amAdmin ? '1' : '.5';
+  toggle.style.cursor = amAdmin ? 'pointer' : 'default';
+
+  const list = document.getElementById('settings-members-list');
+  list.innerHTML = activeGroup.members.map((m) => `
+    <div class="people-row" style="cursor:default">
+      <div class="contact-av" style="${avatarStyle(m, m.id)}">${avatarInnerHtml(m, m.username)}</div>
+      <span class="pname">${escapeHtml(m.username)}${m.is_admin ? '<span class="member-admin-badge">ADMIN</span>' : ''}</span>
+      ${amAdmin && !m.is_admin ? `<button class="member-make-admin" onclick="promoteAdmin(${m.id})">Make admin</button>` : ''}
+    </div>
+  `).join('');
+}
+
+async function toggleRestricted() {
+  if (!activeGroup) return;
+  const myEntry = activeGroup.members.find((m) => m.id === me.id);
+  if (!myEntry || !myEntry.is_admin) return;
+
+  const next = !activeGroup.restricted;
+  const errEl = document.getElementById('settings-error');
+  errEl.textContent = '';
+  try {
+    const updated = await patchJSON(`/api/groups/${activeGroup.id}/settings`, { restricted: next });
+    updated._key = activeGroup._key;
+    activeGroup = updated;
+    groupsById.set(updated.id, updated);
+    groups = groups.map((g) => (g.id === updated.id ? updated : g));
+    renderGroupSettingsModal();
+  } catch (err) {
+    errEl.textContent = err.message;
+  }
+}
+
+async function promoteAdmin(userId) {
+  if (!activeGroup) return;
+  const errEl = document.getElementById('settings-error');
+  errEl.textContent = '';
+  try {
+    const updated = await postJSON(`/api/groups/${activeGroup.id}/admins`, { userId });
+    updated._key = activeGroup._key;
+    activeGroup = updated;
+    groupsById.set(updated.id, updated);
+    groups = groups.map((g) => (g.id === updated.id ? updated : g));
+    renderGroupSettingsModal();
+  } catch (err) {
+    errEl.textContent = err.message;
+  }
+}
+
 // ── messages (shared rendering for DM + group) ──────────────────────────
-function renderMessages(list, kind) {
+// Every message's `body` arrives from the server as an opaque JSON
+// envelope {ct, iv, isImage} — this is the only place that ever turns it
+// back into readable text/image data, and it only works because this
+// browser holds the matching private key (DM) or unwrapped group key.
+async function decryptMessage(m, kind, groupOverride) {
+  let envelope;
+  try {
+    envelope = JSON.parse(m.body);
+  } catch (e) {
+    return { ...m, body: '⚠️ Could not read this message', isImage: false };
+  }
+
+  try {
+    let plaintext;
+    if (kind === 'group') {
+      const key = await quietGroupKey(groupOverride || activeGroup);
+      if (!key) throw new Error('no group key');
+      plaintext = await decryptFromGroup(key, envelope.ct, envelope.iv);
+    } else {
+      const otherId = m.sender_id === me.id ? m.receiver_id : m.sender_id;
+      const other = otherId === me.id ? me : usersById.get(otherId);
+      if (!other || !other.public_key) throw new Error('no public key');
+      plaintext = await decryptFromPeer(other.public_key, envelope.ct, envelope.iv);
+    }
+    return { ...m, body: plaintext, isImage: !!envelope.isImage };
+  } catch (e) {
+    return { ...m, body: '🔒 Could not decrypt this message', isImage: false };
+  }
+}
+
+// Sidebar previews decrypt lazily and cache by message id, since the
+// sidebar can show the latest message of chats that aren't open right
+// now (so there's no "active" key to decrypt synchronously with).
+const previewCache = new Map();
+async function cachePreview(msg, kind) {
+  if (previewCache.has(msg.id)) return;
+  const groupRef = kind === 'group' ? groupsById.get(msg.group_id) : undefined;
+  const decrypted = await decryptMessage(msg, kind, groupRef);
+  previewCache.set(msg.id, { text: decrypted.isImage ? '📷 Photo' : decrypted.body, isImage: decrypted.isImage });
+  renderContactList();
+}
+
+async function renderMessages(list, kind) {
+  const decrypted = await Promise.all(list.map((m) => decryptMessage(m, kind)));
   const el = document.getElementById('messages');
-  el.innerHTML = list.map((m) => messageHtml(m, kind)).join('');
+  el.innerHTML = decrypted.map((m) => messageHtml(m, kind)).join('');
   el.scrollTop = el.scrollHeight;
 }
 
 function messageHtml(m, kind) {
   const sent = m.sender_id === me.id;
-  const isImage = m.body.startsWith('[[img]]');
+  const isImage = m.isImage;
   const bodyHtml = isImage
-    ? `<img class="msg-img" src="${m.body.slice(7)}" alt="Image" onclick="window.open(this.src, '_blank')">`
+    ? `<img class="msg-img" src="${m.body}" alt="Image" onclick="window.open(this.src, '_blank')">`
     : escapeHtml(m.body);
 
   let senderLabel = '';
@@ -393,10 +576,11 @@ function markMessagesRead(ids) {
   });
 }
 
-function appendMessage(m) {
-  const el = document.getElementById('messages');
+async function appendMessage(m) {
   const kind = m.group_id ? 'group' : 'dm';
-  el.insertAdjacentHTML('beforeend', messageHtml(m, kind));
+  const decrypted = await decryptMessage(m, kind);
+  const el = document.getElementById('messages');
+  el.insertAdjacentHTML('beforeend', messageHtml(decrypted, kind));
   el.scrollTop = el.scrollHeight;
 }
 
@@ -428,17 +612,39 @@ function clearTypingFor() {
   typingFrom = null;
 }
 
-function sendMessage() {
+// Encrypts for whichever chat is open right now. Returns null (and shows
+// why) when encryption isn't possible yet — e.g. a DM partner who hasn't
+// opened K1Chat on any device since encryption shipped has no public key
+// on file, so there's nothing to encrypt against.
+async function encryptForActiveChat(plaintext) {
+  if (activeGroup) {
+    if (!activeGroup._key) {
+      showToast('Still setting up encryption for this group — try again in a moment.');
+      return null;
+    }
+    return encryptForGroup(activeGroup._key, plaintext);
+  }
+  if (activeUser) {
+    if (!activeUser.public_key) {
+      showToast(`${activeUser.username} hasn't set up encryption yet (they need to open K1Chat once).`);
+      return null;
+    }
+    return encryptForPeer(activeUser.public_key, plaintext);
+  }
+  return null;
+}
+
+async function sendMessage() {
   const input = document.getElementById('msg-input');
   const text = input.value.trim();
-  if (!text) return;
-  if (activeGroup) {
-    socket.emit('message:send', { groupId: activeGroup.id, body: text });
-  } else if (activeUser) {
-    socket.emit('message:send', { to: activeUser.id, body: text });
-  } else {
-    return;
-  }
+  if (!text || (!activeGroup && !activeUser)) return;
+
+  const envelope = await encryptForActiveChat(text);
+  if (!envelope) return;
+
+  if (activeGroup) socket.emit('message:send', { groupId: activeGroup.id, ct: envelope.ct, iv: envelope.iv, isImage: false });
+  else socket.emit('message:send', { to: activeUser.id, ct: envelope.ct, iv: envelope.iv, isImage: false });
+
   input.value = '';
   input.style.height = '';
 }
@@ -506,9 +712,11 @@ async function handleFileSelected(event) {
     return;
   }
 
-  const body = '[[img]]' + dataUrl;
-  if (activeGroup) socket.emit('message:send', { groupId: activeGroup.id, body });
-  else socket.emit('message:send', { to: activeUser.id, body });
+  const envelope = await encryptForActiveChat(dataUrl);
+  if (!envelope) return;
+
+  if (activeGroup) socket.emit('message:send', { groupId: activeGroup.id, ct: envelope.ct, iv: envelope.iv, isImage: true });
+  else socket.emit('message:send', { to: activeUser.id, ct: envelope.ct, iv: envelope.iv, isImage: true });
 }
 
 // ── profile picture ──────────────────────────────────────────────────────
@@ -622,8 +830,25 @@ async function submitNewGroup() {
   const memberIds = [...document.querySelectorAll('.nc-member-check:checked')].map((c) => parseInt(c.value, 10));
   if (memberIds.length === 0) { errEl.textContent = 'Pick at least one other person.'; return; }
 
+  const missingKey = memberIds.find((id) => !usersById.get(id) || !usersById.get(id).public_key);
+  if (missingKey) {
+    errEl.textContent = `${usersById.get(missingKey).username} hasn't set up encryption yet (they need to open K1Chat once).`;
+    return;
+  }
+
   try {
-    const group = await postJSON('/api/groups', { name, memberIds });
+    // Make the group's own key and wrap a copy for every chosen member
+    // (plus myself) with their public key, entirely in this browser —
+    // the server only ever stores the encrypted copies below.
+    const myPublicKey = await getMyPublicKeyB64();
+    const memberPublicKeys = [
+      { userId: me.id, publicKeyB64: myPublicKey },
+      ...memberIds.map((id) => ({ userId: id, publicKeyB64: usersById.get(id).public_key })),
+    ];
+    const { groupKey, wrapped } = await createGroupKeyBundle(memberPublicKeys);
+
+    const group = await postJSON('/api/groups', { name, memberIds, wrappedKeys: wrapped });
+    group._key = groupKey; // we just made it — no need to unwrap it back
     groups.unshift(group);
     groupsById.set(group.id, group);
     closeNewChatModal();

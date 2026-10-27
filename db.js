@@ -14,25 +14,45 @@ async function init() {
       username TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
       avatar_data TEXT,
+      public_key TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
   await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_data TEXT;`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS public_key TEXT;`);
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS groups (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       created_by INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      restricted BOOLEAN NOT NULL DEFAULT false,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
+  await pool.query(`ALTER TABLE groups ADD COLUMN IF NOT EXISTS restricted BOOLEAN NOT NULL DEFAULT false;`);
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS group_members (
       group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      is_admin BOOLEAN NOT NULL DEFAULT false,
       joined_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      PRIMARY KEY (group_id, user_id)
+    );
+  `);
+  await pool.query(`ALTER TABLE group_members ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT false;`);
+
+  // one row per member: the group's symmetric AES key, encrypted (ECDH-wrapped)
+  // so only that member can unwrap it with their own private key. The server
+  // never sees the raw key.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS group_keys (
+      group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      wrapped_key TEXT NOT NULL,
+      iv TEXT NOT NULL,
+      wrapped_by INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       PRIMARY KEY (group_id, user_id)
     );
   `);

@@ -57,6 +57,16 @@ async function putJSON(url, body) {
   if (!res.ok) throw new Error(data.error || 'Request failed');
   return data;
 }
+async function patchJSON(url, body) {
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
 
 function initialsOf(name) {
   return (name || '?').slice(0, 2).toUpperCase();
