@@ -112,13 +112,11 @@ function connectSocket() {
   });
 
   socket.on('call:reject', () => {
-    showToast('Call declined');
-    cleanupCall();
+    endCallWithStatus('Call declined');
   });
 
   socket.on('call:end', () => {
-    showToast('Call ended');
-    cleanupCall();
+    endCallWithStatus('Call ended');
   });
 }
 
@@ -385,22 +383,37 @@ function updateTimerText(el) {
 
 function endCall() {
   if (callOtherId) socket.emit('call:end', { to: callOtherId });
-  cleanupCall();
+  endCallWithStatus('Call ended');
 }
 
-function cleanupCall() {
+// Shows a plain "Call ended" / "Call declined" status in place of the
+// timer for a moment, so hanging up isn't just the window vanishing with
+// no feedback, then closes the overlay and releases mic/camera.
+function endCallWithStatus(message) {
+  if (!document.getElementById('voice-overlay').hidden || !document.getElementById('video-overlay').hidden) {
+    const statusEl = document.getElementById(callKind === 'video' ? 'video-status' : 'voice-status');
+    const timerEl = document.getElementById(callKind === 'video' ? 'video-timer' : 'voice-timer');
+    if (statusEl) statusEl.textContent = message;
+    if (timerEl) timerEl.hidden = true;
+  } else {
+    showToast(message);
+  }
+
   clearInterval(callTimer);
   callTimer = null;
   if (pc) { pc.close(); pc = null; }
   if (localStream) { localStream.getTracks().forEach((t) => t.stop()); localStream = null; }
   pendingIce = [];
   callOtherId = null;
-  callKind = null;
   muted = false;
   camOff = false;
-  document.getElementById('voice-overlay').hidden = true;
-  document.getElementById('video-overlay').hidden = true;
   document.getElementById('incoming-overlay').hidden = true;
+
+  setTimeout(() => {
+    document.getElementById('voice-overlay').hidden = true;
+    document.getElementById('video-overlay').hidden = true;
+    callKind = null;
+  }, 1100);
 }
 
 function toggleMute() {

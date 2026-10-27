@@ -75,3 +75,38 @@ function requireTokenOrRedirect() {
 }
 
 stampLastModified();
+
+// ── installable app (PWA) ───────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+
+let deferredInstallPrompt = null;
+
+function showInstallButtons() {
+  document.querySelectorAll('.js-install-btn').forEach((btn) => { btn.hidden = false; });
+}
+function hideInstallButtons() {
+  document.querySelectorAll('.js-install-btn').forEach((btn) => { btn.hidden = true; });
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallButtons();
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  hideInstallButtons();
+});
+
+async function installApp() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  hideInstallButtons();
+}
