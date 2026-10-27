@@ -97,5 +97,16 @@
   "footer.signature": "Een creatie van Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 Berichten in deze chat zijn end-to-end versleuteld. Alleen jij en {name} kunnen ze lezen.",
   "chat.encrypted_banner_group": "🔒 Berichten in deze groep zijn end-to-end versleuteld. Alleen leden kunnen ze lezen.",
-  "chat.loading_encrypted": "🔒 Versleutelde berichten laden…"
+  "chat.loading_encrypted": "🔒 Versleutelde berichten laden…",
+  "chat.message_deleted": "Dit bericht is verwijderd",
+  "chat.edited": "(bewerkt)",
+  "chat.menu.delete_for_me": "Verwijderen voor mij",
+  "chat.menu.delete_for_everyone": "Verwijderen voor iedereen",
+  "chat.menu.edit": "Bewerken",
+  "chat.editing": "Bericht bewerken",
+  "chat.cancel_edit": "Annuleren",
+  "sidebar.delete_chat": "Chat verwijderen",
+  "chat.confirm.delete_chat": "Deze chat verwijderen? Hij wordt alleen uit jouw weergave verwijderd.",
+  "chat.confirm.delete_for_me": "Dit bericht alleen voor jezelf verwijderen?",
+  "chat.confirm.delete_for_everyone": "Dit bericht voor iedereen verwijderen? Dit kan niet ongedaan worden gemaakt."
 }

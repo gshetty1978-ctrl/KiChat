@@ -97,5 +97,16 @@
   "footer.signature": "Une création de Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 Les messages de cette discussion sont chiffrés de bout en bout. Seuls vous et {name} pouvez les lire.",
   "chat.encrypted_banner_group": "🔒 Les messages de ce groupe sont chiffrés de bout en bout. Seuls les membres peuvent les lire.",
-  "chat.loading_encrypted": "🔒 Chargement des messages chiffrés…"
+  "chat.loading_encrypted": "🔒 Chargement des messages chiffrés…",
+  "chat.message_deleted": "Ce message a été supprimé",
+  "chat.edited": "(modifié)",
+  "chat.menu.delete_for_me": "Supprimer pour moi",
+  "chat.menu.delete_for_everyone": "Supprimer pour tout le monde",
+  "chat.menu.edit": "Modifier",
+  "chat.editing": "Modification du message",
+  "chat.cancel_edit": "Annuler",
+  "sidebar.delete_chat": "Supprimer la discussion",
+  "chat.confirm.delete_chat": "Supprimer cette discussion ? Elle ne sera retirée que de votre vue.",
+  "chat.confirm.delete_for_me": "Supprimer ce message seulement pour vous ?",
+  "chat.confirm.delete_for_everyone": "Supprimer ce message pour tout le monde ? Action irréversible."
 }

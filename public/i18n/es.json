@@ -97,5 +97,16 @@
   "footer.signature": "Una creación de Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 Los mensajes de este chat están cifrados de extremo a extremo. Solo tú y {name} pueden leerlos.",
   "chat.encrypted_banner_group": "🔒 Los mensajes de este grupo están cifrados de extremo a extremo. Solo los miembros pueden leerlos.",
-  "chat.loading_encrypted": "🔒 Cargando mensajes cifrados…"
+  "chat.loading_encrypted": "🔒 Cargando mensajes cifrados…",
+  "chat.message_deleted": "Este mensaje fue eliminado",
+  "chat.edited": "(editado)",
+  "chat.menu.delete_for_me": "Eliminar para mí",
+  "chat.menu.delete_for_everyone": "Eliminar para todos",
+  "chat.menu.edit": "Editar",
+  "chat.editing": "Editando mensaje",
+  "chat.cancel_edit": "Cancelar",
+  "sidebar.delete_chat": "Eliminar chat",
+  "chat.confirm.delete_chat": "¿Eliminar este chat? Solo se eliminará de tu vista.",
+  "chat.confirm.delete_for_me": "¿Eliminar este mensaje solo para ti?",
+  "chat.confirm.delete_for_everyone": "¿Eliminar este mensaje para todos? Esto no se puede deshacer."
 }

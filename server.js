@@ -142,6 +142,48 @@ io.on('connection', (socket) => {
     socketsFor(userId).forEach((sid) => io.to(sid).emit('message:new', message));
   });
 
+  // everyone who should see a live update about a message: the DM pair,
+  // or every current group member
+  async function participantsOf(msg) {
+    if (msg.group_id) {
+      const r = await pool.query('SELECT user_id FROM group_members WHERE group_id = $1', [msg.group_id]);
+      return r.rows.map((row) => row.user_id);
+    }
+    return [msg.sender_id, msg.receiver_id];
+  }
+
+  // "Delete for everyone" - only the sender can; wipes the stored
+  // ciphertext too, not just a flag.
+  socket.on('message:delete', async ({ id }) => {
+    if (!Number.isInteger(id)) return;
+    const existing = await pool.query('SELECT sender_id, receiver_id, group_id FROM messages WHERE id = $1', [id]);
+    const msg = existing.rows[0];
+    if (!msg || msg.sender_id !== userId) return;
+
+    await pool.query("UPDATE messages SET deleted = true, body = '{}' WHERE id = $1", [id]);
+    const participants = await participantsOf(msg);
+    participants.forEach((pid) => socketsFor(pid).forEach((sid) => io.to(sid).emit('message:deleted', { id })));
+  });
+
+  // Edit - only the sender can; ct/iv are freshly encrypted client-side
+  // with the same key as the original message.
+  socket.on('message:edit', async ({ id, ct, iv, isImage }) => {
+    if (!Number.isInteger(id) || typeof ct !== 'string' || typeof iv !== 'string' || !ct) return;
+    const existing = await pool.query('SELECT sender_id, receiver_id, group_id, deleted FROM messages WHERE id = $1', [id]);
+    const msg = existing.rows[0];
+    if (!msg || msg.sender_id !== userId || msg.deleted) return;
+
+    const text = JSON.stringify({ ct, iv, isImage: !!isImage });
+    const updated = await pool.query(
+      'UPDATE messages SET body = $1, edited_at = now() WHERE id = $2 RETURNING edited_at',
+      [text, id]
+    );
+    const participants = await participantsOf(msg);
+    participants.forEach((pid) => socketsFor(pid).forEach((sid) =>
+      io.to(sid).emit('message:edited', { id, body: text, edited_at: updated.rows[0].edited_at })
+    ));
+  });
+
   socket.on('typing', async ({ to, groupId }) => {
     if (Number.isInteger(groupId)) {
       const memberCheck = await pool.query('SELECT user_id FROM group_members WHERE group_id = $1', [groupId]);

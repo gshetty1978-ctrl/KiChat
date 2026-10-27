@@ -65,12 +65,40 @@ async function init() {
       group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
       body TEXT NOT NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-      read BOOLEAN NOT NULL DEFAULT false
+      read BOOLEAN NOT NULL DEFAULT false,
+      deleted BOOLEAN NOT NULL DEFAULT false,
+      edited_at TIMESTAMPTZ
     );
   `);
   // these two run every boot for upgrading a database created before groups existed
   await pool.query(`ALTER TABLE messages ALTER COLUMN receiver_id DROP NOT NULL;`);
   await pool.query(`ALTER TABLE messages ADD COLUMN IF NOT EXISTS group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE;`);
+  await pool.query(`ALTER TABLE messages ADD COLUMN IF NOT EXISTS deleted BOOLEAN NOT NULL DEFAULT false;`);
+  await pool.query(`ALTER TABLE messages ADD COLUMN IF NOT EXISTS edited_at TIMESTAMPTZ;`);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS message_hidden (
+      message_id INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      PRIMARY KEY (message_id, user_id)
+    );
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS dm_cleared (
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      peer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      cleared_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      PRIMARY KEY (user_id, peer_id)
+    );
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS group_cleared (
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+      cleared_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      PRIMARY KEY (user_id, group_id)
+    );
+  `);
 
   await pool.query(`
     DO $$ BEGIN

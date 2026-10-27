@@ -97,5 +97,16 @@
   "footer.signature": "Sebuah karya Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 Pesan dalam obrolan ini dienkripsi end-to-end. Hanya kamu dan {name} yang bisa membacanya.",
   "chat.encrypted_banner_group": "🔒 Pesan dalam grup ini dienkripsi end-to-end. Hanya anggota yang bisa membacanya.",
-  "chat.loading_encrypted": "🔒 Memuat pesan terenkripsi…"
+  "chat.loading_encrypted": "🔒 Memuat pesan terenkripsi…",
+  "chat.message_deleted": "Pesan ini telah dihapus",
+  "chat.edited": "(diedit)",
+  "chat.menu.delete_for_me": "Hapus untuk saya",
+  "chat.menu.delete_for_everyone": "Hapus untuk semua orang",
+  "chat.menu.edit": "Edit",
+  "chat.editing": "Mengedit pesan",
+  "chat.cancel_edit": "Batal",
+  "sidebar.delete_chat": "Hapus obrolan",
+  "chat.confirm.delete_chat": "Hapus obrolan ini? Hanya akan dihapus dari tampilanmu.",
+  "chat.confirm.delete_for_me": "Hapus pesan ini hanya untukmu?",
+  "chat.confirm.delete_for_everyone": "Hapus pesan ini untuk semua orang? Tidak bisa dibatalkan."
 }

@@ -135,14 +135,37 @@ router.get('/:id/messages', requireAuth, async (req, res) => {
   if (!Number.isInteger(groupId)) return res.status(400).json({ error: 'Invalid group id' });
   if (!(await membership(groupId, req.user.id))) return res.status(403).json({ error: 'Not a member of this group' });
 
+  const clearedRes = await pool.query(
+    'SELECT cleared_at FROM group_cleared WHERE user_id = $1 AND group_id = $2',
+    [req.user.id, groupId]
+  );
+  const clearedAt = clearedRes.rows[0] ? clearedRes.rows[0].cleared_at : null;
+
   const result = await pool.query(
-    `SELECT id, sender_id, group_id, body, created_at
-     FROM messages WHERE group_id = $1
-     ORDER BY created_at ASC
+    `SELECT m.id, m.sender_id, m.group_id, m.body, m.created_at, m.deleted, m.edited_at
+     FROM messages m
+     WHERE m.group_id = $1
+       AND ($2::timestamptz IS NULL OR m.created_at > $2)
+       AND NOT EXISTS (SELECT 1 FROM message_hidden h WHERE h.message_id = m.id AND h.user_id = $3)
+     ORDER BY m.created_at ASC
      LIMIT 200`,
-    [groupId]
+    [groupId, clearedAt, req.user.id]
   );
   res.json(result.rows);
+});
+
+// "Delete chat for me" — clears this group from my own view only.
+router.delete('/:id/clear', requireAuth, async (req, res) => {
+  const groupId = parseInt(req.params.id, 10);
+  if (!Number.isInteger(groupId)) return res.status(400).json({ error: 'Invalid group id' });
+  if (!(await membership(groupId, req.user.id))) return res.status(403).json({ error: 'Not a member of this group' });
+
+  await pool.query(
+    `INSERT INTO group_cleared (user_id, group_id, cleared_at) VALUES ($1, $2, now())
+     ON CONFLICT (user_id, group_id) DO UPDATE SET cleared_at = now()`,
+    [req.user.id, groupId]
+  );
+  res.json({ ok: true });
 });
 
 // { restricted: boolean } - admin only

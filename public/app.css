@@ -295,6 +295,47 @@ body {
 }
 .encrypted-loading svg { width: 28px; height: 28px; opacity: .5; }
 
+.msg-row { position: relative; display: flex; align-items: flex-end; gap: 4px; }
+.msg.sent .msg-row { flex-direction: row-reverse; }
+.msg-menu-btn { flex-shrink: 0; width: 22px; height: 22px; border: none; background: none; color: var(--fg3); cursor: pointer; opacity: 0; transition: opacity .12s; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+.msg-menu-btn svg { width: 15px; height: 15px; }
+.msg:hover .msg-menu-btn { opacity: 1; }
+.msg-menu-btn:hover { background: var(--bg3); }
+.msg-menu {
+  position: absolute; top: 100%; z-index: 20; min-width: 150px;
+  background: var(--bg2); border: 1px solid rgba(255,255,255,.08); border-radius: 10px;
+  box-shadow: var(--shadow); padding: 4px; display: flex; flex-direction: column;
+}
+.msg.sent .msg-menu { right: 0; }
+.msg.recv .msg-menu { left: 0; }
+.msg-menu button { background: none; border: none; color: var(--fg); font-family: inherit; font-size: 13px; text-align: left; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+.msg-menu button:hover { background: var(--bg3); }
+.msg-deleted { font-style: italic; color: var(--fg3); background: var(--recv); border: 1px solid rgba(255,255,255,.06); }
+.edited-label { font-size: 10px; color: var(--fg3); font-style: italic; }
+
+.edit-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--accent-dim); color: var(--accent); font-size: 12px; font-weight: 600;
+  padding: 8px 16px;
+}
+.edit-banner button { background: none; border: none; color: var(--accent); font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+.contact-menu-btn {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 24px; border: none; background: none; color: var(--fg3); cursor: pointer;
+  opacity: 0; transition: opacity .12s; display: flex; align-items: center; justify-content: center; border-radius: 6px;
+}
+.contact-menu-btn svg { width: 16px; height: 16px; }
+.contact-item:hover .contact-menu-btn { opacity: 1; }
+.contact-menu-btn:hover { background: var(--bg3); }
+.contact-menu {
+  position: absolute; right: 10px; top: 36px; z-index: 20; min-width: 140px;
+  background: var(--bg2); border: 1px solid rgba(255,255,255,.08); border-radius: 10px;
+  box-shadow: var(--shadow); padding: 4px;
+}
+.contact-menu button { width: 100%; background: none; border: none; color: var(--red); font-family: inherit; font-size: 13px; text-align: left; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+.contact-menu button:hover { background: var(--bg3); }
+
 .input-bar { background: var(--bg1); padding: 12px 16px; display: flex; align-items: flex-end; gap: 10px; border-top: 1px solid rgba(255,255,255,.05); flex-shrink: 0; }
 .input-wrap { flex: 1; display: flex; align-items: flex-end; background: var(--bg2); border-radius: 24px; padding: 8px 14px; }
 .msg-input { flex: 1; background: none; border: none; outline: none; color: var(--fg); font-family: inherit; font-size: 14px; resize: none; min-height: 22px; max-height: 120px; line-height: 1.5; }

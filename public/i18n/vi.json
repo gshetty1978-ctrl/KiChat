@@ -97,5 +97,16 @@
   "footer.signature": "Một tác phẩm của Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 Tin nhắn trong cuộc trò chuyện này được mã hóa đầu cuối. Chỉ bạn và {name} mới đọc được.",
   "chat.encrypted_banner_group": "🔒 Tin nhắn trong nhóm này được mã hóa đầu cuối. Chỉ thành viên mới đọc được.",
-  "chat.loading_encrypted": "🔒 Đang tải tin nhắn đã mã hóa…"
+  "chat.loading_encrypted": "🔒 Đang tải tin nhắn đã mã hóa…",
+  "chat.message_deleted": "Tin nhắn này đã bị xóa",
+  "chat.edited": "(đã chỉnh sửa)",
+  "chat.menu.delete_for_me": "Xóa phía tôi",
+  "chat.menu.delete_for_everyone": "Xóa với mọi người",
+  "chat.menu.edit": "Chỉnh sửa",
+  "chat.editing": "Đang chỉnh sửa tin nhắn",
+  "chat.cancel_edit": "Hủy",
+  "sidebar.delete_chat": "Xóa cuộc trò chuyện",
+  "chat.confirm.delete_chat": "Xóa cuộc trò chuyện này? Nó chỉ bị xóa khỏi màn hình của bạn.",
+  "chat.confirm.delete_for_me": "Chỉ xóa tin nhắn này ở phía bạn?",
+  "chat.confirm.delete_for_everyone": "Xóa tin nhắn này với mọi người? Không thể hoàn tác."
 }

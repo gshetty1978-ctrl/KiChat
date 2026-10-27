@@ -97,5 +97,16 @@
   "footer.signature": "من إبداع Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 الرسائل في هذه المحادثة مشفّرة من طرف إلى طرف. أنت و{name} فقط يمكنكما قراءتها.",
   "chat.encrypted_banner_group": "🔒 الرسائل في هذه المجموعة مشفّرة من طرف إلى طرف. الأعضاء فقط يمكنهم قراءتها.",
-  "chat.loading_encrypted": "🔒 جارٍ تحميل الرسائل المشفّرة…"
+  "chat.loading_encrypted": "🔒 جارٍ تحميل الرسائل المشفّرة…",
+  "chat.message_deleted": "تم حذف هذه الرسالة",
+  "chat.edited": "(معدّلة)",
+  "chat.menu.delete_for_me": "حذف لي",
+  "chat.menu.delete_for_everyone": "حذف للجميع",
+  "chat.menu.edit": "تعديل",
+  "chat.editing": "جارٍ تعديل الرسالة",
+  "chat.cancel_edit": "إلغاء",
+  "sidebar.delete_chat": "حذف المحادثة",
+  "chat.confirm.delete_chat": "هل تريد حذف هذه المحادثة؟ ستُزال من عرضك فقط.",
+  "chat.confirm.delete_for_me": "هل تريد حذف هذه الرسالة لنفسك فقط؟",
+  "chat.confirm.delete_for_everyone": "هل تريد حذف هذه الرسالة للجميع؟ لا يمكن التراجع عن هذا."
 }

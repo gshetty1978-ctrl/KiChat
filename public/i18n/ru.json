@@ -97,5 +97,16 @@
   "footer.signature": "Создание Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 Сообщения в этом чате защищены сквозным шифрованием. Прочитать их можете только вы и {name}.",
   "chat.encrypted_banner_group": "🔒 Сообщения в этой группе защищены сквозным шифрованием. Прочитать их могут только участники.",
-  "chat.loading_encrypted": "🔒 Загрузка зашифрованных сообщений…"
+  "chat.loading_encrypted": "🔒 Загрузка зашифрованных сообщений…",
+  "chat.message_deleted": "Это сообщение удалено",
+  "chat.edited": "(изменено)",
+  "chat.menu.delete_for_me": "Удалить у себя",
+  "chat.menu.delete_for_everyone": "Удалить у всех",
+  "chat.menu.edit": "Изменить",
+  "chat.editing": "Редактирование сообщения",
+  "chat.cancel_edit": "Отмена",
+  "sidebar.delete_chat": "Удалить чат",
+  "chat.confirm.delete_chat": "Удалить этот чат? Он будет удалён только из вашего списка.",
+  "chat.confirm.delete_for_me": "Удалить это сообщение только у себя?",
+  "chat.confirm.delete_for_everyone": "Удалить это сообщение у всех? Это действие нельзя отменить."
 }

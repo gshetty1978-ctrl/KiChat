@@ -97,5 +97,16 @@
   "footer.signature": "ผลงานโดย Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 ข้อความในแชทนี้เข้ารหัสแบบ end-to-end คุณและ{name}เท่านั้นที่อ่านได้",
   "chat.encrypted_banner_group": "🔒 ข้อความในกลุ่มนี้เข้ารหัสแบบ end-to-end เฉพาะสมาชิกเท่านั้นที่อ่านได้",
-  "chat.loading_encrypted": "🔒 กำลังโหลดข้อความที่เข้ารหัส…"
+  "chat.loading_encrypted": "🔒 กำลังโหลดข้อความที่เข้ารหัส…",
+  "chat.message_deleted": "ข้อความนี้ถูกลบแล้ว",
+  "chat.edited": "(แก้ไขแล้ว)",
+  "chat.menu.delete_for_me": "ลบสำหรับฉัน",
+  "chat.menu.delete_for_everyone": "ลบสำหรับทุกคน",
+  "chat.menu.edit": "แก้ไข",
+  "chat.editing": "กำลังแก้ไขข้อความ",
+  "chat.cancel_edit": "ยกเลิก",
+  "sidebar.delete_chat": "ลบแชท",
+  "chat.confirm.delete_chat": "ลบแชทนี้? จะถูกลบออกจากมุมมองของคุณเท่านั้น",
+  "chat.confirm.delete_for_me": "ลบข้อความนี้เฉพาะฝั่งคุณ?",
+  "chat.confirm.delete_for_everyone": "ลบข้อความนี้สำหรับทุกคน? ไม่สามารถย้อนกลับได้"
 }
