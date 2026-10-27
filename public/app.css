@@ -154,6 +154,14 @@ body {
 }
 .install-link svg { width: 16px; height: 16px; }
 .install-link:hover { background: var(--bg3); }
+
+.lang-btn {
+  display: flex; align-items: center; gap: 6px; margin-left: auto; margin-bottom: 14px;
+  background: var(--bg2); border: 1px solid rgba(255,255,255,.08); border-radius: 20px;
+  padding: 6px 12px; color: var(--fg2); font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.lang-btn svg { width: 14px; height: 14px; }
+.lang-btn:hover { background: var(--bg3); }
 .sidebar-signature { margin-top: auto; padding: 10px 16px 14px; border-top: 1px solid rgba(255,255,255,.05); }
 
 @media (max-width: 860px) {
