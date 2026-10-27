@@ -120,6 +120,10 @@
 
       <div class="messages" id="messages"></div>
 
+      <div class="edit-banner" id="edit-banner" hidden>
+        <span data-i18n="chat.editing">Editing message</span>
+        <button onclick="cancelEdit()" data-i18n="chat.cancel_edit">Cancel</button>
+      </div>
       <div class="input-bar">
         <button class="icon-btn attach-btn" onclick="document.getElementById('file-input').click()" data-i18n-title="chat.attach" title="Attach an image">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

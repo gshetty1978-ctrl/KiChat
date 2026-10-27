@@ -97,5 +97,16 @@
   "footer.signature": "Kiaan Ganesh Shetty की एक रचना ·",
   "chat.encrypted_banner": "🔒 इस चैट के मैसेज एंड-टू-एंड एन्क्रिप्टेड हैं। इन्हें सिर्फ़ आप और {name} पढ़ सकते हैं।",
   "chat.encrypted_banner_group": "🔒 इस ग्रुप के मैसेज एंड-टू-एंड एन्क्रिप्टेड हैं। इन्हें सिर्फ़ सदस्य पढ़ सकते हैं।",
-  "chat.loading_encrypted": "🔒 एन्क्रिप्टेड मैसेज लोड हो रहे हैं…"
+  "chat.loading_encrypted": "🔒 एन्क्रिप्टेड मैसेज लोड हो रहे हैं…",
+  "chat.message_deleted": "यह मैसेज डिलीट कर दिया गया है",
+  "chat.edited": "(संपादित)",
+  "chat.menu.delete_for_me": "मेरे लिए डिलीट करें",
+  "chat.menu.delete_for_everyone": "सबके लिए डिलीट करें",
+  "chat.menu.edit": "संपादित करें",
+  "chat.editing": "मैसेज संपादित हो रहा है",
+  "chat.cancel_edit": "रद्द करें",
+  "sidebar.delete_chat": "चैट डिलीट करें",
+  "chat.confirm.delete_chat": "यह चैट डिलीट करें? यह सिर्फ़ आपकी व्यू से हटेगी।",
+  "chat.confirm.delete_for_me": "यह मैसेज सिर्फ़ अपने लिए डिलीट करें?",
+  "chat.confirm.delete_for_everyone": "यह मैसेज सबके लिए डिलीट करें? यह पूर्ववत नहीं किया जा सकता।"
 }

@@ -97,5 +97,16 @@
   "footer.signature": "Kiaan Ganesh Shetty의 작품 ·",
   "chat.encrypted_banner": "🔒 이 채팅의 메시지는 종단 간 암호화되어 있습니다. 당신과 {name}만 읽을 수 있습니다.",
   "chat.encrypted_banner_group": "🔒 이 그룹의 메시지는 종단 간 암호화되어 있습니다. 멤버만 읽을 수 있습니다.",
-  "chat.loading_encrypted": "🔒 암호화된 메시지 불러오는 중…"
+  "chat.loading_encrypted": "🔒 암호화된 메시지 불러오는 중…",
+  "chat.message_deleted": "이 메시지는 삭제되었습니다",
+  "chat.edited": "(수정됨)",
+  "chat.menu.delete_for_me": "나에게서 삭제",
+  "chat.menu.delete_for_everyone": "모두에게서 삭제",
+  "chat.menu.edit": "수정",
+  "chat.editing": "메시지 수정 중",
+  "chat.cancel_edit": "취소",
+  "sidebar.delete_chat": "채팅 삭제",
+  "chat.confirm.delete_chat": "이 채팅을 삭제할까요? 내 화면에서만 제거됩니다.",
+  "chat.confirm.delete_for_me": "이 메시지를 나에게서만 삭제할까요?",
+  "chat.confirm.delete_for_everyone": "이 메시지를 모두에게서 삭제할까요? 되돌릴 수 없습니다."
 }

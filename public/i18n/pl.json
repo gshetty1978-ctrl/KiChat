@@ -97,5 +97,16 @@
   "footer.signature": "Dzieło Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 Wiadomości w tym czacie są szyfrowane end-to-end. Tylko ty i {name} możecie je odczytać.",
   "chat.encrypted_banner_group": "🔒 Wiadomości w tej grupie są szyfrowane end-to-end. Tylko członkowie mogą je odczytać.",
-  "chat.loading_encrypted": "🔒 Ładowanie zaszyfrowanych wiadomości…"
+  "chat.loading_encrypted": "🔒 Ładowanie zaszyfrowanych wiadomości…",
+  "chat.message_deleted": "Ta wiadomość została usunięta",
+  "chat.edited": "(edytowano)",
+  "chat.menu.delete_for_me": "Usuń dla mnie",
+  "chat.menu.delete_for_everyone": "Usuń dla wszystkich",
+  "chat.menu.edit": "Edytuj",
+  "chat.editing": "Edytowanie wiadomości",
+  "chat.cancel_edit": "Anuluj",
+  "sidebar.delete_chat": "Usuń czat",
+  "chat.confirm.delete_chat": "Usunąć ten czat? Zostanie usunięty tylko z twojego widoku.",
+  "chat.confirm.delete_for_me": "Usunąć tę wiadomość tylko dla siebie?",
+  "chat.confirm.delete_for_everyone": "Usunąć tę wiadomość dla wszystkich? Tej operacji nie można cofnąć."
 }

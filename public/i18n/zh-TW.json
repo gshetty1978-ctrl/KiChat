@@ -97,5 +97,16 @@
   "footer.signature": "由 Kiaan Ganesh Shetty 創作 ·",
   "chat.encrypted_banner": "🔒 此聊天中的訊息已進行端對端加密。只有你和 {name} 可以閱讀。",
   "chat.encrypted_banner_group": "🔒 此群組中的訊息已進行端對端加密。只有成員可以閱讀。",
-  "chat.loading_encrypted": "🔒 正在載入加密訊息…"
+  "chat.loading_encrypted": "🔒 正在載入加密訊息…",
+  "chat.message_deleted": "此訊息已刪除",
+  "chat.edited": "（已編輯）",
+  "chat.menu.delete_for_me": "為我刪除",
+  "chat.menu.delete_for_everyone": "為所有人刪除",
+  "chat.menu.edit": "編輯",
+  "chat.editing": "正在編輯訊息",
+  "chat.cancel_edit": "取消",
+  "sidebar.delete_chat": "刪除聊天",
+  "chat.confirm.delete_chat": "刪除此聊天？僅會從你的檢視中移除。",
+  "chat.confirm.delete_for_me": "僅為自己刪除此訊息？",
+  "chat.confirm.delete_for_everyone": "為所有人刪除此訊息？此操作無法復原。"
 }

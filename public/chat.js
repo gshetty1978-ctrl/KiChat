@@ -25,6 +25,8 @@ let localStream = null;
 let pendingIce = [];
 let pendingOffer = null; // { from, sdp, kind } while incoming overlay is shown
 let callOtherId = null;
+let editingMessageId = null;
+let editingKind = null;
 let callKind = null;
 let callSecs = 0;
 let callTimer = null;
@@ -153,6 +155,32 @@ function connectSocket() {
 
   socket.on('message:error', ({ error }) => {
     showToast(error);
+  });
+
+  socket.on('message:deleted', ({ id }) => {
+    const el = document.querySelector(`.msg[data-id="${id}"]`);
+    if (el) {
+      const kind = el.getAttribute('data-kind') || 'dm';
+      el.outerHTML = messageHtml({ id, sender_id: el.classList.contains('sent') ? me.id : -1, deleted: true, created_at: new Date().toISOString() }, kind);
+    }
+  });
+
+  socket.on('message:edited', async ({ id, body, edited_at }) => {
+    const el = document.querySelector(`.msg[data-id="${id}"]`);
+    if (!el) return;
+    const kind = el.getAttribute('data-kind') || 'dm';
+    const sent = el.classList.contains('sent');
+    const msg = {
+      id,
+      sender_id: sent ? me.id : (activeGroup ? null : activeUser.id),
+      receiver_id: !activeGroup && !sent ? me.id : (activeUser ? activeUser.id : null),
+      group_id: activeGroup ? activeGroup.id : null,
+      body, edited_at,
+      created_at: new Date().toISOString(),
+      read: true,
+    };
+    const decrypted = await decryptMessage(msg, kind);
+    el.outerHTML = messageHtml(decrypted, kind);
   });
 
   // ── call signaling ──
@@ -299,6 +327,12 @@ function renderContactList() {
             <span class="contact-prev">${escapeHtml(preview)}</span>
             ${item.unreadCount > 0 ? `<span class="contact-unread">${item.unreadCount}</span>` : ''}
           </div>
+        </div>
+        <button class="contact-menu-btn" onclick="toggleContactMenu(event, '${item.type}', ${item.id})" title="More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        </button>
+        <div class="contact-menu" id="contact-menu-${item.type}-${item.id}" hidden>
+          <button onclick="event.stopPropagation(); deleteChat('${item.type}', ${item.id})">${t('sidebar.delete_chat')}</button>
         </div>
       </div>
     `;
@@ -530,6 +564,7 @@ async function promoteAdmin(userId) {
 // back into readable text/image data, and it only works because this
 // browser holds the matching private key (DM) or unwrapped group key.
 async function decryptMessage(m, kind, groupOverride) {
+  if (m.deleted) return { ...m, body: '', isImage: false };
   let envelope;
   try {
     envelope = JSON.parse(m.body);
@@ -576,6 +611,16 @@ async function renderMessages(list, kind) {
 
 function messageHtml(m, kind) {
   const sent = m.sender_id === me.id;
+
+  if (m.deleted) {
+    return `
+      <div class="msg ${sent ? 'sent' : 'recv'}" data-id="${m.id}" data-kind="${kind}">
+        <div class="msg-bubble msg-deleted">${t('chat.message_deleted')}</div>
+        <div class="msg-meta"><span>${timeLabel(m.created_at)}</span></div>
+      </div>
+    `;
+  }
+
   const isImage = m.isImage;
   const bodyHtml = isImage
     ? `<img class="msg-img" src="${m.body}" alt="Image" onclick="window.open(this.src, '_blank')">`
@@ -590,17 +635,120 @@ function messageHtml(m, kind) {
   const checkHtml = kind === 'dm' && sent
     ? `<span class="check ${m.read ? 'read' : 'unread'}">✓✓</span>`
     : '';
+  const editedHtml = m.edited_at ? `<span class="edited-label">${t('chat.edited')}</span>` : '';
+
+  const menuItems = [];
+  menuItems.push(`<button onclick="deleteForMe(${m.id}, '${kind}')">${t('chat.menu.delete_for_me')}</button>`);
+  if (sent) {
+    menuItems.push(`<button onclick="deleteForEveryone(${m.id})">${t('chat.menu.delete_for_everyone')}</button>`);
+    if (!isImage) menuItems.push(`<button onclick="startEditMessage(${m.id}, '${kind}')">${t('chat.menu.edit')}</button>`);
+  }
 
   return `
-    <div class="msg ${sent ? 'sent' : 'recv'}" data-id="${m.id}">
+    <div class="msg ${sent ? 'sent' : 'recv'}" data-id="${m.id}" data-kind="${kind}" data-plaintext="${isImage ? '' : escapeHtml(m.body)}">
       ${senderLabel}
-      <div class="msg-bubble" style="${isImage ? 'padding:4px;background:transparent;border:none' : ''}">${bodyHtml}</div>
+      <div class="msg-row">
+        <div class="msg-bubble" style="${isImage ? 'padding:4px;background:transparent;border:none' : ''}">${bodyHtml}</div>
+        <button class="msg-menu-btn" onclick="toggleMsgMenu(${m.id}, event)" title="More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        </button>
+        <div class="msg-menu" id="msg-menu-${m.id}" hidden>${menuItems.join('')}</div>
+      </div>
       <div class="msg-meta">
+        ${editedHtml}
         <span>${timeLabel(m.created_at)}</span>
         ${checkHtml}
       </div>
     </div>
   `;
+}
+
+function toggleMsgMenu(id, event) {
+  event.stopPropagation();
+  const menu = document.getElementById(`msg-menu-${id}`);
+  const wasHidden = menu.hidden;
+  document.querySelectorAll('.msg-menu').forEach((m) => { m.hidden = true; });
+  menu.hidden = !wasHidden;
+}
+document.addEventListener('click', () => {
+  document.querySelectorAll('.msg-menu, .contact-menu').forEach((m) => { m.hidden = true; });
+});
+
+function toggleContactMenu(event, type, id) {
+  event.stopPropagation();
+  const menu = document.getElementById(`contact-menu-${type}-${id}`);
+  const wasHidden = menu.hidden;
+  document.querySelectorAll('.contact-menu').forEach((m) => { m.hidden = true; });
+  menu.hidden = !wasHidden;
+}
+
+// "Delete chat" clears the conversation from only my own view.
+async function deleteChat(type, id) {
+  if (!confirm(t('chat.confirm.delete_chat'))) return;
+  try {
+    if (type === 'group') await fetchDelete(`/api/groups/${id}/clear`);
+    else await fetchDelete(`/api/messages/chat/${id}`);
+  } catch (e) {}
+
+  if (type === 'group') { groupLastMsg.delete(id); groupUnread.delete(id); }
+  else { lastMsg.delete(id); unread.delete(id); }
+
+  if ((type === 'dm' && activeUser && activeUser.id === id) || (type === 'group' && activeGroup && activeGroup.id === id)) {
+    document.getElementById('messages').innerHTML = encryptedBannerHtml(type === 'group' ? 'group' : 'dm');
+  }
+  renderContactList();
+}
+
+async function deleteForMe(id, kind) {
+  document.getElementById('msg-menu-' + id).hidden = true;
+  if (!confirm(t('chat.confirm.delete_for_me'))) return;
+  const url = kind === 'group' ? null : `/api/messages/${id}/for-me`;
+  try {
+    if (kind === 'group') await fetchDeleteForMeGroup(id);
+    else await fetchDelete(url);
+  } catch (e) {}
+  const el = document.querySelector(`.msg[data-id="${id}"]`);
+  if (el) el.remove();
+}
+async function fetchDelete(url) {
+  const res = await fetch(url, { method: 'DELETE', headers: { Authorization: 'Bearer ' + getToken() } });
+  if (!res.ok) throw new Error('failed');
+}
+// group messages use the same table/id space as DMs - "for me" hiding
+// is identical server-side, just reuses the DM route's logic by id
+async function fetchDeleteForMeGroup(id) {
+  return fetchDelete(`/api/messages/${id}/for-me`);
+}
+
+function deleteForEveryone(id) {
+  document.getElementById('msg-menu-' + id).hidden = true;
+  if (!confirm(t('chat.confirm.delete_for_everyone'))) return;
+  socket.emit('message:delete', { id });
+}
+
+function startEditMessage(id, kind) {
+  const el = document.querySelector(`.msg[data-id="${id}"]`);
+  if (!el) return;
+  const plaintext = el.getAttribute('data-plaintext');
+  const input = document.getElementById('msg-input');
+  input.value = plaintext;
+  input.focus();
+  autoResizeInput();
+  editingMessageId = id;
+  editingKind = kind;
+  document.getElementById('edit-banner').hidden = false;
+  document.getElementById('msg-menu-' + id).hidden = true;
+}
+function cancelEdit() {
+  editingMessageId = null;
+  editingKind = null;
+  document.getElementById('edit-banner').hidden = true;
+  document.getElementById('msg-input').value = '';
+}
+function autoResizeInput() {
+  const el = document.getElementById('msg-input');
+  el.style.height = '';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
 function markMessagesRead(ids) {
@@ -675,6 +823,12 @@ async function sendMessage() {
 
   const envelope = await encryptForActiveChat(text);
   if (!envelope) return;
+
+  if (editingMessageId) {
+    socket.emit('message:edit', { id: editingMessageId, ct: envelope.ct, iv: envelope.iv, isImage: false });
+    cancelEdit();
+    return;
+  }
 
   if (activeGroup) socket.emit('message:send', { groupId: activeGroup.id, ct: envelope.ct, iv: envelope.iv, isImage: false });
   else socket.emit('message:send', { to: activeUser.id, ct: envelope.ct, iv: envelope.iv, isImage: false });

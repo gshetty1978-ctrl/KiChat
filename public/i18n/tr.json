@@ -97,5 +97,16 @@
   "footer.signature": "Kiaan Ganesh Shetty'nin bir eseri ·",
   "chat.encrypted_banner": "🔒 Bu sohbetteki mesajlar uçtan uca şifrelidir. Yalnızca sen ve {name} okuyabilir.",
   "chat.encrypted_banner_group": "🔒 Bu gruptaki mesajlar uçtan uca şifrelidir. Yalnızca üyeler okuyabilir.",
-  "chat.loading_encrypted": "🔒 Şifrelenmiş mesajlar yükleniyor…"
+  "chat.loading_encrypted": "🔒 Şifrelenmiş mesajlar yükleniyor…",
+  "chat.message_deleted": "Bu mesaj silindi",
+  "chat.edited": "(düzenlendi)",
+  "chat.menu.delete_for_me": "Benden sil",
+  "chat.menu.delete_for_everyone": "Herkesten sil",
+  "chat.menu.edit": "Düzenle",
+  "chat.editing": "Mesaj düzenleniyor",
+  "chat.cancel_edit": "İptal",
+  "sidebar.delete_chat": "Sohbeti sil",
+  "chat.confirm.delete_chat": "Bu sohbet silinsin mi? Yalnızca senin görünümünden kaldırılır.",
+  "chat.confirm.delete_for_me": "Bu mesaj yalnızca senden mi silinsin?",
+  "chat.confirm.delete_for_everyone": "Bu mesaj herkesten mi silinsin? Bu geri alınamaz."
 }

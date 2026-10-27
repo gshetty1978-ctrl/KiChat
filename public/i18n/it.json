@@ -97,5 +97,16 @@
   "footer.signature": "Una creazione di Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 I messaggi in questa chat sono crittografati end-to-end. Solo tu e {name} potete leggerli.",
   "chat.encrypted_banner_group": "🔒 I messaggi in questo gruppo sono crittografati end-to-end. Solo i membri possono leggerli.",
-  "chat.loading_encrypted": "🔒 Caricamento messaggi crittografati…"
+  "chat.loading_encrypted": "🔒 Caricamento messaggi crittografati…",
+  "chat.message_deleted": "Questo messaggio è stato eliminato",
+  "chat.edited": "(modificato)",
+  "chat.menu.delete_for_me": "Elimina per me",
+  "chat.menu.delete_for_everyone": "Elimina per tutti",
+  "chat.menu.edit": "Modifica",
+  "chat.editing": "Modifica messaggio",
+  "chat.cancel_edit": "Annulla",
+  "sidebar.delete_chat": "Elimina chat",
+  "chat.confirm.delete_chat": "Eliminare questa chat? Verrà rimossa solo dalla tua vista.",
+  "chat.confirm.delete_for_me": "Eliminare questo messaggio solo per te?",
+  "chat.confirm.delete_for_everyone": "Eliminare questo messaggio per tutti? Non può essere annullato."
 }

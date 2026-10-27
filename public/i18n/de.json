@@ -97,5 +97,16 @@
   "footer.signature": "Eine Kreation von Kiaan Ganesh Shetty ·",
   "chat.encrypted_banner": "🔒 Nachrichten in diesem Chat sind Ende-zu-Ende-verschlüsselt. Nur du und {name} könnt sie lesen.",
   "chat.encrypted_banner_group": "🔒 Nachrichten in dieser Gruppe sind Ende-zu-Ende-verschlüsselt. Nur Mitglieder können sie lesen.",
-  "chat.loading_encrypted": "🔒 Verschlüsselte Nachrichten werden geladen…"
+  "chat.loading_encrypted": "🔒 Verschlüsselte Nachrichten werden geladen…",
+  "chat.message_deleted": "Diese Nachricht wurde gelöscht",
+  "chat.edited": "(bearbeitet)",
+  "chat.menu.delete_for_me": "Für mich löschen",
+  "chat.menu.delete_for_everyone": "Für alle löschen",
+  "chat.menu.edit": "Bearbeiten",
+  "chat.editing": "Nachricht wird bearbeitet",
+  "chat.cancel_edit": "Abbrechen",
+  "sidebar.delete_chat": "Chat löschen",
+  "chat.confirm.delete_chat": "Diesen Chat löschen? Er wird nur aus deiner Ansicht entfernt.",
+  "chat.confirm.delete_for_me": "Diese Nachricht nur für dich löschen?",
+  "chat.confirm.delete_for_everyone": "Diese Nachricht für alle löschen? Das kann nicht rückgängig gemacht werden."
 }

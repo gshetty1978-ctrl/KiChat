@@ -97,5 +97,16 @@
   "footer.signature": "A Kiaan Ganesh Shetty Creation ·",
   "chat.encrypted_banner": "🔒 Messages in this chat are end-to-end encrypted. Only you and {name} can read them.",
   "chat.encrypted_banner_group": "🔒 Messages in this group are end-to-end encrypted. Only members can read them.",
-  "chat.loading_encrypted": "🔒 Loading encrypted messages…"
+  "chat.loading_encrypted": "🔒 Loading encrypted messages…",
+  "chat.message_deleted": "This message was deleted",
+  "chat.edited": "(edited)",
+  "chat.menu.delete_for_me": "Delete for me",
+  "chat.menu.delete_for_everyone": "Delete for everyone",
+  "chat.menu.edit": "Edit",
+  "chat.editing": "Editing message",
+  "chat.cancel_edit": "Cancel",
+  "sidebar.delete_chat": "Delete chat",
+  "chat.confirm.delete_chat": "Delete this chat? It will only be removed from your view.",
+  "chat.confirm.delete_for_me": "Delete this message for yourself only?",
+  "chat.confirm.delete_for_everyone": "Delete this message for everyone? This cannot be undone."
 }
