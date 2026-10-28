@@ -4,7 +4,7 @@ const CACHE = 'k1chat-v1';
 const SHELL = [
   '/', '/login', '/signup', '/chat',
   '/app.css', '/common.js', '/chat.js',
-  '/favicon.svg', '/manifest.json',
+  '/favicon.png', '/manifest.json',
   '/icons/icon-192.png', '/icons/icon-512.png',
 ];
 
