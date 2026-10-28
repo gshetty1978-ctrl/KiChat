@@ -13,7 +13,7 @@
       <stop offset="100%" stop-color="#dfeeea"/>
     </linearGradient>
     <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
-      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feGaussianBlur stdDeviation="12" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -25,10 +25,9 @@
   <rect width="512" height="512" rx="110" fill="url(#bg)"/>
 
   <g transform="translate(86,66)">
-    <use href="#bubble" fill="none" stroke="#3ecfb2" stroke-width="30" opacity="0.55" filter="url(#glow)"/>
-    <use href="#bubble" fill="none" stroke="url(#stroke)" stroke-width="22" stroke-linejoin="round"/>
+    <use href="#bubble" fill="none" stroke="#3ecfb2" stroke-width="28" opacity="0.5" filter="url(#glow)"/>
+    <use href="#bubble" fill="none" stroke="url(#stroke)" stroke-width="20" stroke-linejoin="round"/>
   </g>
 
-  <text x="256" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="118" letter-spacing="-2" fill="url(#text)">K1</text>
-  <text x="256" y="300" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="46" letter-spacing="6" fill="url(#text)">CHAT</text>
+  <text x="256" y="245" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="168" letter-spacing="-4" fill="url(#text)">K1</text>
 </svg>
