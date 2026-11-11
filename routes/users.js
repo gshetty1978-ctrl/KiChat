@@ -1,6 +1,8 @@
 const express = require('express');
+const crypto = require('crypto');
 const { pool } = require('../db');
 const { requireAuth } = require('../middleware/auth');
+const supabase = require('../supabase');
 
 const router = express.Router();
 
@@ -40,15 +42,32 @@ router.put('/me/avatar', requireAuth, async (req, res) => {
     return res.json({ avatar_data: null });
   }
 
-  if (typeof avatar !== 'string' || !AVATAR_DATA_URL_RE.test(avatar)) {
+  const match = /^data:image\/(png|jpeg|jpg|webp);base64,([A-Za-z0-9+/=]+)$/.exec(avatar || '');
+  if (typeof avatar !== 'string' || !AVATAR_DATA_URL_RE.test(avatar) || !match) {
     return res.status(400).json({ error: 'Avatar must be a PNG, JPEG, or WEBP image' });
   }
   if (avatar.length > MAX_AVATAR_BYTES) {
     return res.status(413).json({ error: 'Image is too large even after compression — try a smaller photo' });
   }
 
-  await pool.query('UPDATE users SET avatar_data = $1 WHERE id = $2', [avatar, req.user.id]);
-  res.json({ avatar_data: avatar });
+  // Avatars aren't secret, so no encryption needed — just store the plain
+  // image bytes in Supabase (if configured) and keep the URL instead of
+  // the base64 blob. Without Supabase set up yet, fall back to storing
+  // the base64 data URL directly, same as before.
+  let stored = avatar;
+  if (supabase.enabled) {
+    const [, ext, base64] = match;
+    const buffer = Buffer.from(base64, 'base64');
+    const path = `avatars/${req.user.id}-${crypto.randomBytes(6).toString('hex')}.${ext}`;
+    try {
+      stored = await supabase.uploadBuffer(buffer, path, `image/${ext}`);
+    } catch (err) {
+      return res.status(502).json({ error: err.message });
+    }
+  }
+
+  await pool.query('UPDATE users SET avatar_data = $1 WHERE id = $2', [stored, req.user.id]);
+  res.json({ avatar_data: stored });
 });
 
 module.exports = router;

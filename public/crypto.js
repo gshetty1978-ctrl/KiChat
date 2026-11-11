@@ -111,6 +111,22 @@ async function aesDecrypt(aesKey, ctB64, ivB64) {
   return new TextDecoder().decode(ptBuf);
 }
 
+// Byte-oriented siblings of aesEncrypt/aesDecrypt, for image attachments —
+// those aren't UTF-8 text, so they're encrypted/decrypted as raw bytes
+// instead of being wrapped in a string first.
+async function aesEncryptBytes(aesKey, dataBuf) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ctBuf = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, dataBuf);
+  return { ct: bufToB64(ctBuf), iv: bufToB64(iv) };
+}
+// `ct` may be a base64 string (ciphertext stored inline) or an
+// ArrayBuffer (ciphertext fetched straight from a media URL) — either way
+// this returns the decrypted plaintext bytes as an ArrayBuffer.
+async function aesDecryptBytes(aesKey, ct, ivB64) {
+  const ctBuf = typeof ct === 'string' ? b64ToBuf(ct) : ct;
+  return crypto.subtle.decrypt({ name: 'AES-GCM', iv: new Uint8Array(b64ToBuf(ivB64)) }, aesKey, ctBuf);
+}
+
 // ── direct messages ──────────────────────────────────────────────────────
 async function encryptForPeer(peerPublicKeyB64, plaintext) {
   const key = await deriveSharedKey(peerPublicKeyB64);
@@ -119,6 +135,14 @@ async function encryptForPeer(peerPublicKeyB64, plaintext) {
 async function decryptFromPeer(peerPublicKeyB64, ctB64, ivB64) {
   const key = await deriveSharedKey(peerPublicKeyB64);
   return aesDecrypt(key, ctB64, ivB64);
+}
+async function encryptBytesForPeer(peerPublicKeyB64, dataBuf) {
+  const key = await deriveSharedKey(peerPublicKeyB64);
+  return aesEncryptBytes(key, dataBuf);
+}
+async function decryptBytesFromPeer(peerPublicKeyB64, ct, ivB64) {
+  const key = await deriveSharedKey(peerPublicKeyB64);
+  return aesDecryptBytes(key, ct, ivB64);
 }
 
 // ── groups ───────────────────────────────────────────────────────────────
@@ -153,6 +177,12 @@ async function encryptForGroup(groupKey, plaintext) {
 }
 async function decryptFromGroup(groupKey, ctB64, ivB64) {
   return aesDecrypt(groupKey, ctB64, ivB64);
+}
+async function encryptBytesForGroup(groupKey, dataBuf) {
+  return aesEncryptBytes(groupKey, dataBuf);
+}
+async function decryptBytesFromGroup(groupKey, ct, ivB64) {
+  return aesDecryptBytes(groupKey, ct, ivB64);
 }
 
 async function getMyPublicKeyB64() {

@@ -12,6 +12,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const messageRoutes = require('./routes/messages');
 const groupRoutes = require('./routes/groups');
+const mediaRoutes = require('./routes/media');
 
 const app = express();
 app.use(cors());
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/groups', groupRoutes);
+app.use('/api/media', mediaRoutes);
 
 // extensions: ['html'] lets /login, /signup, /chat resolve to their .html
 // files directly, so the browser's address bar never shows the extension.
@@ -122,11 +124,25 @@ io.on('connection', (socket) => {
   // and IV produced client-side (see public/crypto.js). It's stored and
   // relayed as an opaque JSON envelope — this process has no key to
   // decrypt it with.
-  socket.on('message:send', async ({ to, groupId, ct, iv, isImage }) => {
-    if (typeof ct !== 'string' || typeof iv !== 'string' || !ct) return;
-    if (ct.length > 1.4 * 1024 * 1024) return; // generous cap over the client's own image-compression target
+  // `url` points at Supabase Storage (ciphertext uploaded via /api/media/
+  // upload); `ct` is the ciphertext stored inline instead, same as every
+  // message was before Supabase existed — either way the server only
+  // ever holds/relays opaque bytes it has no key to decrypt.
+  socket.on('message:send', async ({ to, groupId, ct, url, iv, isImage, mime }) => {
+    if (typeof iv !== 'string' || !iv) return;
+    const envelope = { iv, isImage: !!isImage };
+    if (typeof url === 'string' && url) {
+      if (url.length > 2048) return;
+      envelope.url = url;
+    } else if (typeof ct === 'string' && ct) {
+      if (ct.length > 1.4 * 1024 * 1024) return; // generous cap over the client's own image-compression target
+      envelope.ct = ct;
+    } else {
+      return;
+    }
+    if (typeof mime === 'string' && mime) envelope.mime = mime;
 
-    const text = JSON.stringify({ ct, iv, isImage: !!isImage });
+    const text = JSON.stringify(envelope);
 
     if (Number.isInteger(groupId)) {
       const memberCheck = await pool.query(

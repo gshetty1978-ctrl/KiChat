@@ -657,17 +657,35 @@ async function decryptMessage(m, kind, groupOverride) {
   }
 
   try {
-    let plaintext;
-    if (kind === 'group') {
-      const key = await quietGroupKey(groupOverride || activeGroup);
-      if (!key) throw new Error('no group key');
-      plaintext = await decryptFromGroup(key, envelope.ct, envelope.iv);
+    const isGroup = kind === 'group';
+    let groupKey, peerPublicKey;
+    if (isGroup) {
+      groupKey = await quietGroupKey(groupOverride || activeGroup);
+      if (!groupKey) throw new Error('no group key');
     } else {
       const otherId = m.sender_id === me.id ? m.receiver_id : m.sender_id;
       const other = otherId === me.id ? me : usersById.get(otherId);
       if (!other || !other.public_key) throw new Error('no public key');
-      plaintext = await decryptFromPeer(other.public_key, envelope.ct, envelope.iv);
+      peerPublicKey = other.public_key;
     }
+
+    // New-format image: raw-bytes AES-GCM ciphertext, either inline (ct)
+    // or uploaded to Supabase Storage (url) — either way `mime` tells us
+    // how to turn the decrypted bytes back into a displayable image.
+    // (A pre-Supabase image has no `mime` and falls through to the plain
+    // text path below, since it was the whole data: URL encrypted as text.)
+    if (envelope.isImage && envelope.mime) {
+      const ctInput = envelope.url ? await (await fetch(envelope.url)).arrayBuffer() : envelope.ct;
+      const plainBuf = isGroup
+        ? await decryptBytesFromGroup(groupKey, ctInput, envelope.iv)
+        : await decryptBytesFromPeer(peerPublicKey, ctInput, envelope.iv);
+      const blobUrl = URL.createObjectURL(new Blob([plainBuf], { type: envelope.mime }));
+      return { ...m, body: blobUrl, isImage: true };
+    }
+
+    const plaintext = isGroup
+      ? await decryptFromGroup(groupKey, envelope.ct, envelope.iv)
+      : await decryptFromPeer(peerPublicKey, envelope.ct, envelope.iv);
     return { ...m, body: plaintext, isImage: !!envelope.isImage };
   } catch (e) {
     return { ...m, body: '🔒 Could not decrypt this message', isImage: false };
@@ -900,6 +918,25 @@ async function encryptForActiveChat(plaintext) {
   return null;
 }
 
+// Same as above, but for raw bytes (image attachments) instead of text.
+async function encryptBytesForActiveChat(dataBuf) {
+  if (activeGroup) {
+    if (!activeGroup._key) {
+      showToast(t('toast.group_key_wait'));
+      return null;
+    }
+    return encryptBytesForGroup(activeGroup._key, dataBuf);
+  }
+  if (activeUser) {
+    if (!activeUser.public_key) {
+      showToast(t('toast.no_encryption_yet', { name: activeUser.username }));
+      return null;
+    }
+    return encryptBytesForPeer(activeUser.public_key, dataBuf);
+  }
+  return null;
+}
+
 async function sendMessage() {
   const input = document.getElementById('msg-input');
   const text = input.value.trim();
@@ -984,11 +1021,25 @@ async function handleFileSelected(event) {
     return;
   }
 
-  const envelope = await encryptForActiveChat(dataUrl);
-  if (!envelope) return;
+  const mimeMatch = /^data:([^;]+);base64,/.exec(dataUrl);
+  const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+  const rawBytes = await (await fetch(dataUrl)).arrayBuffer();
 
-  if (activeGroup) socket.emit('message:send', { groupId: activeGroup.id, ct: envelope.ct, iv: envelope.iv, isImage: true });
-  else socket.emit('message:send', { to: activeUser.id, ct: envelope.ct, iv: envelope.iv, isImage: true });
+  const encrypted = await encryptBytesForActiveChat(rawBytes);
+  if (!encrypted) return;
+
+  const payload = { iv: encrypted.iv, isImage: true, mime };
+  try {
+    const { url } = await postJSON('/api/media/upload', { ct: encrypted.ct });
+    payload.url = url;
+  } catch (err) {
+    // Media storage isn't set up yet (or the upload failed) — fall back
+    // to sending the ciphertext inline, same as before Supabase existed.
+    payload.ct = encrypted.ct;
+  }
+
+  if (activeGroup) socket.emit('message:send', { groupId: activeGroup.id, ...payload });
+  else socket.emit('message:send', { to: activeUser.id, ...payload });
 }
 
 // ── profile picture ──────────────────────────────────────────────────────
