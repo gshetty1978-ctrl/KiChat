@@ -20,11 +20,15 @@ let activeGroup = null;
 let sidebarTab = 'all';
 let typingFrom = null;
 
-let pc = null;
 let localStream = null;
-let pendingIce = [];
-let pendingOffer = null; // { from, sdp, kind } while incoming overlay is shown
-let callOtherId = null;
+let activeCallId = null; // callId shared by every peer in the current call
+let peers = new Map(); // userId -> RTCPeerConnection
+let pendingIce = new Map(); // userId -> candidate[] queued until that peer's remoteDescription is set
+let callParticipants = new Map(); // userId -> user object, everyone else currently in the call
+let invitedIds = new Set(); // userIds we've invited into the current call but haven't heard back on
+let pendingOffer = null; // { from, sdp, kind, callId } while the incoming-call overlay is shown
+let pendingInvite = null; // { from, callId, kind, participants } while the incoming-invite overlay is shown
+let incomingMode = null; // 'call' | 'invite' — which of the above the incoming overlay is showing
 let editingMessageId = null;
 let editingKind = null;
 let callKind = null;
@@ -184,12 +188,21 @@ function connectSocket() {
   });
 
   // ── call signaling ──
-  socket.on('call:offer', async ({ from, sdp, kind }) => {
-    if (pendingOffer || pc) {
-      socket.emit('call:reject', { to: from });
+  // `callId` is shared by every peer in a call. While we're already in one,
+  // an offer tagged with that same callId is another participant's mesh
+  // connection joining it (see call:participant-joined below) — not a new
+  // ring — so it's answered silently instead of shown as an incoming call.
+  socket.on('call:offer', async ({ from, sdp, kind, callId }) => {
+    if (activeCallId && callId === activeCallId) {
+      await answerMeshPeer(from, sdp, kind);
       return;
     }
-    pendingOffer = { from, sdp, kind };
+    if (pendingOffer || pendingInvite || activeCallId) {
+      socket.emit('call:reject', { to: from, callId });
+      return;
+    }
+    pendingOffer = { from, sdp, kind, callId };
+    incomingMode = 'call';
     const user = usersById.get(from);
     setAvatarEl(document.getElementById('incoming-avatar'), user);
     document.getElementById('incoming-name').textContent = user ? user.username : 'Unknown';
@@ -197,28 +210,99 @@ function connectSocket() {
     document.getElementById('incoming-overlay').hidden = false;
   });
 
-  socket.on('call:answer', async ({ sdp }) => {
-    if (!pc) return;
-    await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-    flushPendingIce();
-    setCallConnected();
+  socket.on('call:answer', async ({ from, sdp, callId }) => {
+    if (callId !== activeCallId) return;
+    const peer = peers.get(from);
+    if (!peer) return;
+    await peer.setRemoteDescription(new RTCSessionDescription(sdp));
+    flushPendingIce(from);
+    markPeerConnected(from);
   });
 
-  socket.on('call:ice', async ({ candidate }) => {
-    if (!pc) return;
-    if (!pc.remoteDescription) {
-      pendingIce.push(candidate);
+  socket.on('call:ice', async ({ from, candidate, callId }) => {
+    if (callId !== activeCallId) return;
+    const peer = peers.get(from);
+    if (!peer) return;
+    if (!peer.remoteDescription) {
+      if (!pendingIce.has(from)) pendingIce.set(from, []);
+      pendingIce.get(from).push(candidate);
     } else {
-      try { await pc.addIceCandidate(candidate); } catch (e) {}
+      try { await peer.addIceCandidate(candidate); } catch (e) {}
     }
   });
 
-  socket.on('call:reject', () => {
+  // The person we rang declined — this is only ever the original 1:1 ring
+  // (an invite decline uses its own event below), so the whole call ends.
+  socket.on('call:reject', ({ callId }) => {
+    if (callId !== activeCallId) return;
     endCallWithStatus(t('call.declined'));
   });
 
-  socket.on('call:end', () => {
-    endCallWithStatus(t('call.ended'));
+  // Someone's busy on another call, or offline — the ring stops right
+  // away with a clear reason instead of hanging forever with no feedback.
+  socket.on('call:busy', ({ to, callId }) => {
+    if (callId !== activeCallId) return;
+    const user = usersById.get(to);
+    endCallWithStatus(t('call.busy', { name: user ? user.username : '' }));
+  });
+  socket.on('call:unavailable', ({ to, callId }) => {
+    if (callId !== activeCallId) return;
+    const user = usersById.get(to);
+    endCallWithStatus(t('call.unavailable', { name: user ? user.username : '' }));
+  });
+
+  // One participant leaving a group call: drop just their peer connection
+  // and keep going for everyone else. If that was the last other person,
+  // it's the same as the call ending for us too.
+  socket.on('call:end', ({ from, callId }) => {
+    if (callId !== activeCallId) return;
+    removePeer(from);
+    if (callParticipants.size === 0) {
+      endCallWithStatus(t('call.ended'));
+    } else {
+      const user = usersById.get(from);
+      showToast(t('call.participant_left', { name: user ? user.username : '' }));
+      renderCallParticipants();
+    }
+  });
+
+  // ── group calls: being invited into one that's already running ──
+  socket.on('call:invited', async ({ from, callId, kind, participants }) => {
+    if (pendingOffer || pendingInvite || activeCallId) {
+      socket.emit('call:invite-decline', { callId });
+      return;
+    }
+    pendingInvite = { from, callId, kind, participants };
+    incomingMode = 'invite';
+    const user = usersById.get(from);
+    setAvatarEl(document.getElementById('incoming-avatar'), user);
+    document.getElementById('incoming-name').textContent = user ? user.username : 'Unknown';
+    document.getElementById('incoming-kind').textContent = t('call.incoming_invite');
+    document.getElementById('incoming-overlay').hidden = false;
+  });
+
+  socket.on('call:participant-joined', async ({ callId, userId }) => {
+    if (callId !== activeCallId || userId === me.id) return;
+    invitedIds.delete(userId);
+    const user = usersById.get(userId);
+    callParticipants.set(userId, user || { id: userId, username: 'Unknown' });
+    renderCallParticipants();
+    showToast(t('call.participant_joined', { name: user ? user.username : '' }));
+    await addPeerAndOffer(userId);
+  });
+
+  socket.on('call:invite-failed', ({ to, callId, reason }) => {
+    if (callId !== activeCallId) return;
+    invitedIds.delete(to);
+    const user = usersById.get(to);
+    const name = user ? user.username : '';
+    showToast(reason === 'busy' ? t('call.invite_failed_busy', { name }) : t('call.invite_failed_offline', { name }));
+  });
+  socket.on('call:invite-declined', ({ callId, userId }) => {
+    if (callId !== activeCallId) return;
+    invitedIds.delete(userId);
+    const user = usersById.get(userId);
+    showToast(t('call.invite_declined', { name: user ? user.username : '' }));
   });
 }
 
@@ -1047,119 +1131,292 @@ async function submitNewGroup() {
   }
 }
 
-// ── WebRTC calls (direct messages only) ─────────────────────────────────
+// ── WebRTC calls (1:1 and group, built from a full mesh of peer connections
+// that all share one callId) ─────────────────────────────────────────────
 async function getMedia(kind) {
   const constraints = kind === 'video' ? { audio: true, video: true } : { audio: true, video: false };
   return navigator.mediaDevices.getUserMedia(constraints);
 }
 
-function newPeerConnection(toId) {
+function newCallId() {
+  return (crypto.randomUUID && crypto.randomUUID()) || (Date.now().toString(36) + Math.random().toString(36).slice(2));
+}
+
+function newPeerConnection(peerId) {
   const conn = new RTCPeerConnection({ iceServers: ICE_SERVERS });
   conn.onicecandidate = (e) => {
-    if (e.candidate) socket.emit('call:ice', { to: toId, candidate: e.candidate });
+    if (e.candidate) socket.emit('call:ice', { to: peerId, candidate: e.candidate, callId: activeCallId });
   };
-  conn.ontrack = (e) => {
-    const stream = e.streams[0];
-    if (callKind === 'video') {
-      document.getElementById('remote-video').srcObject = stream;
-    } else {
-      document.getElementById('remote-audio').srcObject = stream;
-    }
-  };
+  conn.ontrack = (e) => attachRemoteStream(peerId, e.streams[0]);
+  peers.set(peerId, conn);
+  localStream.getTracks().forEach((t) => conn.addTrack(t, localStream));
   return conn;
 }
 
+// The peer's tile/chip is always rendered (via renderCallParticipants)
+// before its RTCPeerConnection is created, so this element always exists
+// by the time a track actually arrives.
+function attachRemoteStream(peerId, stream) {
+  const el = document.getElementById(callKind === 'video' ? 'video-tile-' + peerId : 'call-audio-' + peerId);
+  if (el) el.srcObject = stream;
+}
+
 async function startCall(kind) {
-  if (!activeUser || pc) return;
-  callOtherId = activeUser.id;
+  if (!activeUser || activeCallId) return;
+  activeCallId = newCallId();
   callKind = kind;
+  callParticipants = new Map([[activeUser.id, activeUser]]);
+  invitedIds = new Set();
 
   try {
     localStream = await getMedia(kind);
   } catch (err) {
     showToast(t('toast.mic_cam_error', { device: kind === 'video' ? t('toast.camera_microphone') : t('toast.microphone') }));
+    activeCallId = null;
+    callParticipants = new Map();
     return;
   }
 
-  pc = newPeerConnection(callOtherId);
-  localStream.getTracks().forEach((t) => pc.addTrack(t, localStream));
+  showCallOverlay(kind, t('call.calling'));
 
-  showCallOverlay(kind, activeUser, t('call.calling'));
-
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-  socket.emit('call:offer', { to: callOtherId, sdp: offer, kind });
+  const peer = newPeerConnection(activeUser.id);
+  const offer = await peer.createOffer();
+  await peer.setLocalDescription(offer);
+  socket.emit('call:offer', { to: activeUser.id, sdp: offer, kind, callId: activeCallId });
 }
 
 async function acceptCall() {
   if (!pendingOffer) return;
-  const { from, sdp, kind } = pendingOffer;
-  callOtherId = from;
-  callKind = kind;
+  const { from, sdp, kind, callId } = pendingOffer;
+  const user = usersById.get(from);
   document.getElementById('incoming-overlay').hidden = true;
 
   try {
     localStream = await getMedia(kind);
   } catch (err) {
     showToast(t('toast.mic_cam_error', { device: kind === 'video' ? t('toast.camera_microphone') : t('toast.microphone') }));
-    socket.emit('call:reject', { to: from });
+    socket.emit('call:reject', { to: from, callId });
     pendingOffer = null;
     return;
   }
 
-  pc = newPeerConnection(callOtherId);
-  localStream.getTracks().forEach((t) => pc.addTrack(t, localStream));
+  activeCallId = callId;
+  callKind = kind;
+  callParticipants = new Map([[from, user || { id: from, username: 'Unknown' }]]);
+  invitedIds = new Set();
+  showCallOverlay(kind, t('call.connecting'));
 
-  await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-  flushPendingIce();
+  const peer = newPeerConnection(from);
+  await peer.setRemoteDescription(new RTCSessionDescription(sdp));
+  flushPendingIce(from);
 
-  const answer = await pc.createAnswer();
-  await pc.setLocalDescription(answer);
-  socket.emit('call:answer', { to: from, sdp: answer });
+  const answer = await peer.createAnswer();
+  await peer.setLocalDescription(answer);
+  socket.emit('call:answer', { to: from, sdp: answer, callId });
 
-  const user = usersById.get(from);
-  showCallOverlay(kind, user, t('call.connecting'));
-  setCallConnected();
+  markPeerConnected();
   pendingOffer = null;
 }
 
+// Another participant's connection joining a group call we're already in
+// — not a ring, so it's wired up and answered without asking.
+async function answerMeshPeer(from, sdp, kind) {
+  const user = usersById.get(from);
+  callParticipants.set(from, user || { id: from, username: 'Unknown' });
+  renderCallParticipants();
+
+  const peer = newPeerConnection(from);
+  await peer.setRemoteDescription(new RTCSessionDescription(sdp));
+  flushPendingIce(from);
+
+  const answer = await peer.createAnswer();
+  await peer.setLocalDescription(answer);
+  socket.emit('call:answer', { to: from, sdp: answer, callId: activeCallId });
+  markPeerConnected();
+}
+
+// We're an existing participant and someone new just joined the call —
+// open our own mesh connection out to them.
+async function addPeerAndOffer(peerId) {
+  const peer = newPeerConnection(peerId);
+  const offer = await peer.createOffer();
+  await peer.setLocalDescription(offer);
+  socket.emit('call:offer', { to: peerId, sdp: offer, kind: callKind, callId: activeCallId });
+}
+
 function rejectCall() {
-  if (pendingOffer) socket.emit('call:reject', { to: pendingOffer.from });
+  if (pendingOffer) socket.emit('call:reject', { to: pendingOffer.from, callId: pendingOffer.callId });
   pendingOffer = null;
   document.getElementById('incoming-overlay').hidden = true;
 }
 
-function flushPendingIce() {
-  pendingIce.forEach((c) => pc.addIceCandidate(c).catch(() => {}));
-  pendingIce = [];
+// The incoming overlay is shared by a plain ring and a group-call invite;
+// these two just route Accept/Decline to whichever one is actually showing.
+function acceptIncoming() {
+  if (incomingMode === 'invite') acceptInvite(); else acceptCall();
+}
+function declineIncoming() {
+  if (incomingMode === 'invite') declineInvite(); else rejectCall();
 }
 
-function showCallOverlay(kind, user, status) {
-  const name = user ? user.username : 'Unknown';
+// ── group calls: joining one via an invite, and inviting others into one ──
+async function acceptInvite() {
+  if (!pendingInvite) return;
+  const { callId, kind, participants } = pendingInvite;
+  document.getElementById('incoming-overlay').hidden = true;
+
+  try {
+    localStream = await getMedia(kind);
+  } catch (err) {
+    showToast(t('toast.mic_cam_error', { device: kind === 'video' ? t('toast.camera_microphone') : t('toast.microphone') }));
+    socket.emit('call:invite-decline', { callId });
+    pendingInvite = null;
+    return;
+  }
+
+  activeCallId = callId;
+  callKind = kind;
+  callParticipants = new Map();
+  participants.filter((id) => id !== me.id).forEach((id) => {
+    callParticipants.set(id, usersById.get(id) || { id, username: 'Unknown' });
+  });
+  invitedIds = new Set();
+  showCallOverlay(kind, t('call.connecting'));
+  socket.emit('call:invite-accept', { callId });
+  pendingInvite = null;
+  // Each existing participant's mesh connection arrives as its own
+  // call:offer tagged with this callId and is answered in answerMeshPeer().
+}
+
+function declineInvite() {
+  if (pendingInvite) socket.emit('call:invite-decline', { callId: pendingInvite.callId });
+  pendingInvite = null;
+  document.getElementById('incoming-overlay').hidden = true;
+}
+
+function openInviteModal() {
+  if (!activeCallId) return;
+  renderInviteList();
+  document.getElementById('invite-call-modal').hidden = false;
+}
+function closeInviteModal() {
+  document.getElementById('invite-call-modal').hidden = true;
+}
+function renderInviteList() {
+  const list = document.getElementById('invite-call-list');
+  if (!list) return;
+  const candidates = users.filter((u) => !callParticipants.has(u.id) && u.id !== me.id);
+  if (candidates.length === 0) {
+    list.innerHTML = `<div style="padding:16px 8px;color:var(--fg3);font-size:13px">${t('call.no_one_to_invite')}</div>`;
+    return;
+  }
+  list.innerHTML = candidates.map((u) => `
+    <div class="people-row" onclick="inviteToCall(${u.id})">
+      <div class="contact-av" style="${avatarStyle(u, u.id)}">${avatarInnerHtml(u, u.username)}</div>
+      <span class="pname">${escapeHtml(u.username)}</span>
+      ${invitedIds.has(u.id) ? `<span class="invite-sent-tag">${t('call.invite_sent_tag')}</span>` : ''}
+    </div>
+  `).join('');
+}
+function inviteToCall(userId) {
+  if (!activeCallId || invitedIds.has(userId) || callParticipants.has(userId)) return;
+  invitedIds.add(userId);
+  socket.emit('call:invite', { to: userId, callId: activeCallId });
+  const user = usersById.get(userId);
+  showToast(t('call.invited', { name: user ? user.username : '' }));
+  renderInviteList();
+}
+
+function flushPendingIce(peerId) {
+  const peer = peers.get(peerId);
+  const queued = pendingIce.get(peerId) || [];
+  queued.forEach((c) => peer.addIceCandidate(c).catch(() => {}));
+  pendingIce.delete(peerId);
+}
+
+function removePeer(peerId) {
+  const peer = peers.get(peerId);
+  if (peer) { peer.close(); peers.delete(peerId); }
+  pendingIce.delete(peerId);
+  callParticipants.delete(peerId);
+  invitedIds.delete(peerId);
+  const el = document.getElementById(callKind === 'video' ? 'video-tile-wrap-' + peerId : 'voice-participant-' + peerId);
+  if (el) el.remove();
+}
+
+// Rebuilds the participant tiles/avatars from callParticipants, creating
+// each peer's <video>/<audio> element if it doesn't exist yet so it's
+// ready to receive a stream the moment that peer's connection is made.
+function renderCallParticipants() {
+  const containerId = callKind === 'video' ? 'video-tiles' : 'voice-participants';
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  [...container.children].forEach((child) => {
+    const id = parseInt(child.dataset.peerId, 10);
+    if (!callParticipants.has(id)) child.remove();
+  });
+
+  callParticipants.forEach((user, id) => {
+    const wrapId = callKind === 'video' ? 'video-tile-wrap-' + id : 'voice-participant-' + id;
+    if (document.getElementById(wrapId)) return;
+
+    if (callKind === 'video') {
+      const wrap = document.createElement('div');
+      wrap.className = 'video-tile';
+      wrap.id = wrapId;
+      wrap.dataset.peerId = id;
+      wrap.innerHTML = `<video id="video-tile-${id}" class="remote-video-tile" autoplay playsinline></video>
+        <span class="video-tile-name">${escapeHtml(user.username || 'Unknown')}</span>`;
+      container.appendChild(wrap);
+    } else {
+      const chip = document.createElement('div');
+      chip.className = 'voice-participant';
+      chip.id = wrapId;
+      chip.dataset.peerId = id;
+      const av = document.createElement('div');
+      av.className = 'call-avatar';
+      setAvatarEl(av, user);
+      const name = document.createElement('div');
+      name.className = 'call-name';
+      name.textContent = user.username || 'Unknown';
+      const audio = document.createElement('audio');
+      audio.id = 'call-audio-' + id;
+      audio.autoplay = true;
+      chip.append(av, name, audio);
+      container.appendChild(chip);
+    }
+  });
+}
+
+function showCallOverlay(kind, status) {
   if (kind === 'video') {
-    document.getElementById('video-name').textContent = name;
     document.getElementById('video-status').textContent = status;
     document.getElementById('video-timer').hidden = true;
     document.getElementById('local-video').srcObject = localStream;
+    document.getElementById('video-tiles').innerHTML = '';
     document.getElementById('video-overlay').hidden = false;
   } else {
-    setAvatarEl(document.getElementById('voice-avatar'), user);
-    document.getElementById('voice-name').textContent = name;
     document.getElementById('voice-status').textContent = status;
     document.getElementById('voice-timer').hidden = true;
+    document.getElementById('voice-participants').innerHTML = '';
     document.getElementById('voice-overlay').hidden = false;
   }
+  renderCallParticipants();
 }
 
-function setCallConnected() {
+function markPeerConnected() {
+  renderCallParticipants();
   const statusEl = document.getElementById(callKind === 'video' ? 'video-status' : 'voice-status');
+  if (statusEl) statusEl.textContent = t('call.connected');
   const timerEl = document.getElementById(callKind === 'video' ? 'video-timer' : 'voice-timer');
-  statusEl.textContent = t('call.connected');
-  timerEl.hidden = false;
-  callSecs = 0;
-  updateTimerText(timerEl);
-  clearInterval(callTimer);
-  callTimer = setInterval(() => { callSecs++; updateTimerText(timerEl); }, 1000);
+  if (timerEl && timerEl.hidden) {
+    timerEl.hidden = false;
+    callSecs = 0;
+    updateTimerText(timerEl);
+    clearInterval(callTimer);
+    callTimer = setInterval(() => { callSecs++; updateTimerText(timerEl); }, 1000);
+  }
 }
 
 function updateTimerText(el) {
@@ -1169,7 +1426,7 @@ function updateTimerText(el) {
 }
 
 function endCall() {
-  if (callOtherId) socket.emit('call:end', { to: callOtherId });
+  if (activeCallId) socket.emit('call:end', { callId: activeCallId });
   endCallWithStatus(t('call.ended'));
 }
 
@@ -1188,17 +1445,23 @@ function endCallWithStatus(message) {
 
   clearInterval(callTimer);
   callTimer = null;
-  if (pc) { pc.close(); pc = null; }
+  peers.forEach((peer) => peer.close());
+  peers = new Map();
   if (localStream) { localStream.getTracks().forEach((t) => t.stop()); localStream = null; }
-  pendingIce = [];
-  callOtherId = null;
+  pendingIce = new Map();
+  callParticipants = new Map();
+  invitedIds = new Set();
+  activeCallId = null;
   muted = false;
   camOff = false;
   document.getElementById('incoming-overlay').hidden = true;
+  closeInviteModal();
 
   setTimeout(() => {
     document.getElementById('voice-overlay').hidden = true;
     document.getElementById('video-overlay').hidden = true;
+    document.getElementById('video-tiles').innerHTML = '';
+    document.getElementById('voice-participants').innerHTML = '';
     callKind = null;
   }, 1100);
 }

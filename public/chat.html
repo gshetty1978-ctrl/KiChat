@@ -150,13 +150,13 @@
     <div class="call-name" id="incoming-name"></div>
     <div class="call-status" id="incoming-kind">Incoming call…</div>
     <div class="call-actions">
-      <button class="call-btn end" onclick="rejectCall()" data-i18n-title="call.decline" title="Decline">
+      <button class="call-btn end" onclick="declineIncoming()" data-i18n-title="call.decline" title="Decline">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="23" y1="1" x2="1" y2="23"/>
           <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.45-3.45m-2.49-2.5a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.71"/>
         </svg>
       </button>
-      <button class="call-btn accept" onclick="acceptCall()" data-i18n-title="call.accept" title="Accept">
+      <button class="call-btn accept" onclick="acceptIncoming()" data-i18n-title="call.accept" title="Accept">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
         </svg>
@@ -167,8 +167,7 @@
 
 <div class="call-overlay" id="voice-overlay" hidden>
   <div class="voice-card">
-    <div class="call-avatar" id="voice-avatar"></div>
-    <div class="call-name" id="voice-name"></div>
+    <div class="voice-participants" id="voice-participants"></div>
     <div class="call-status" id="voice-status">Calling…</div>
     <div class="call-timer" id="voice-timer" hidden>0:00</div>
     <div class="call-actions">
@@ -179,6 +178,12 @@
           <line x1="8" y1="23" x2="16" y2="23"/>
         </svg>
       </button>
+      <button class="call-btn invite" onclick="openInviteModal()" data-i18n-title="call.invite" title="Add people">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/>
+          <line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/>
+        </svg>
+      </button>
       <button class="call-btn end" onclick="endCall()" data-i18n-title="call.end" title="End call">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.45-3.45m-2.49-2.5a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.71"/>
@@ -187,15 +192,13 @@
       </button>
     </div>
   </div>
-  <audio id="remote-audio" autoplay></audio>
 </div>
 
 <div class="call-overlay" id="video-overlay" hidden>
   <div class="video-card">
-    <video id="remote-video" class="remote-video" autoplay playsinline></video>
+    <div class="video-tiles" id="video-tiles"></div>
     <div class="video-top">
       <div class="video-top-info">
-        <div class="video-top-name" id="video-name"></div>
         <div class="video-top-status" id="video-status">Calling…</div>
       </div>
     </div>
@@ -213,6 +216,12 @@
           <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
         </svg>
       </button>
+      <button class="call-btn invite" onclick="openInviteModal()" data-i18n-title="call.invite" title="Add people">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/>
+          <line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/>
+        </svg>
+      </button>
       <button class="call-btn end" onclick="endCall()" data-i18n-title="call.end" title="End call">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
           <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.45-3.45m-2.49-2.5a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.71"/>
@@ -220,6 +229,20 @@
         </svg>
       </button>
     </div>
+  </div>
+</div>
+
+<!-- invite more people into an ongoing call -->
+<div class="modal-overlay" id="invite-call-modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 data-i18n="modal.invite_call.title">Add people to the call</h3>
+      <button class="icon-btn" onclick="closeInviteModal()" data-i18n-title="close" title="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p class="modal-hint" data-i18n="modal.invite_call.hint">Pick someone to bring into this call.</p>
+    <div class="people-list" id="invite-call-list"></div>
   </div>
 </div>
 
