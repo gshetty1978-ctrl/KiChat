@@ -1,5 +1,32 @@
 // Requires common.js to be loaded first.
 const ICE_SERVERS = [{ urls: 'stun:stun.l.google.com:19302' }];
+
+// In-app replacement for the browser's own confirm() popup (which shows
+// the page's own URL and looks like a generic browser alert rather than
+// part of the app). Resolves true/false instead of blocking the thread.
+function confirmDialog(message) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('confirm-modal');
+    document.getElementById('confirm-modal-message').textContent = message;
+    modal.hidden = false;
+
+    const cleanup = (result) => {
+      modal.hidden = true;
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      modal.removeEventListener('click', onOverlayClick);
+      resolve(result);
+    };
+    const okBtn = document.getElementById('confirm-modal-ok');
+    const cancelBtn = document.getElementById('confirm-modal-cancel');
+    const onOk = () => cleanup(true);
+    const onCancel = () => cleanup(false);
+    const onOverlayClick = (e) => { if (e.target === modal) cleanup(false); };
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+    modal.addEventListener('click', onOverlayClick);
+  });
+}
 const MAX_IMAGE_RAW_BYTES = 8 * 1024 * 1024; // reject before even trying to compress
 const MAX_IMAGE_SENT_BYTES = 900 * 1024; // after compression, hard cap on what we actually send
 const MAX_AVATAR_RAW_BYTES = 8 * 1024 * 1024;
@@ -786,7 +813,7 @@ function toggleContactMenu(event, type, id) {
 
 // "Delete chat" clears the conversation from only my own view.
 async function deleteChat(type, id) {
-  if (!confirm(t('chat.confirm.delete_chat'))) return;
+  if (!await confirmDialog(t('chat.confirm.delete_chat'))) return;
   try {
     if (type === 'group') await fetchDelete(`/api/groups/${id}/clear`);
     else await fetchDelete(`/api/messages/chat/${id}`);
@@ -803,7 +830,7 @@ async function deleteChat(type, id) {
 
 async function deleteForMe(id, kind) {
   document.getElementById('msg-menu-' + id).hidden = true;
-  if (!confirm(t('chat.confirm.delete_for_me'))) return;
+  if (!await confirmDialog(t('chat.confirm.delete_for_me'))) return;
   const url = kind === 'group' ? null : `/api/messages/${id}/for-me`;
   try {
     if (kind === 'group') await fetchDeleteForMeGroup(id);
@@ -822,9 +849,9 @@ async function fetchDeleteForMeGroup(id) {
   return fetchDelete(`/api/messages/${id}/for-me`);
 }
 
-function deleteForEveryone(id) {
+async function deleteForEveryone(id) {
   document.getElementById('msg-menu-' + id).hidden = true;
-  if (!confirm(t('chat.confirm.delete_for_everyone'))) return;
+  if (!await confirmDialog(t('chat.confirm.delete_for_everyone'))) return;
   socket.emit('message:delete', { id });
 }
 

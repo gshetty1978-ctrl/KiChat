@@ -246,6 +246,17 @@
   </div>
 </div>
 
+<!-- in-app confirm, used in place of the browser's own confirm() popup -->
+<div class="modal-overlay" id="confirm-modal" hidden>
+  <div class="modal-card narrow">
+    <p class="modal-hint" id="confirm-modal-message" style="margin:4px 0 20px;color:var(--fg)"></p>
+    <div class="call-actions" style="margin-top:0">
+      <button class="auth-submit" id="confirm-modal-cancel" style="flex:1;margin-top:0;background:var(--bg3);color:var(--fg)" data-i18n="confirm.cancel">Cancel</button>
+      <button class="auth-submit" id="confirm-modal-ok" style="flex:1;margin-top:0;background:var(--red)" data-i18n="confirm.ok">Delete</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
 <!-- New chat / new group -->

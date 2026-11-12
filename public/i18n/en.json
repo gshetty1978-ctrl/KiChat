@@ -122,5 +122,7 @@
   "sidebar.delete_chat": "Delete chat",
   "chat.confirm.delete_chat": "Delete this chat? It will only be removed from your view.",
   "chat.confirm.delete_for_me": "Delete this message for yourself only?",
-  "chat.confirm.delete_for_everyone": "Delete this message for everyone? This cannot be undone."
+  "chat.confirm.delete_for_everyone": "Delete this message for everyone? This cannot be undone.",
+  "confirm.cancel": "Cancel",
+  "confirm.ok": "Delete"
 }
